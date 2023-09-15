@@ -18,10 +18,49 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+}
+
+body{
+  @apply bg-neutral-950
+}
+
+/* simple scroll bar */
+nav::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Handle */
+nav::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #5555;
+}
+
+/* Handle on hover */
+nav::-webkit-scrollbar-thumb:hover {
+  background: #6666;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #FFF;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.border-bottom{
+  @apply relative after:absolute after:bottom-0 after:left-0 after:right-0 after:border-b after:border-neutral-500
 }
