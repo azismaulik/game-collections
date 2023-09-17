@@ -1,5 +1,7 @@
 import CardBrowse from "@/components/CardBrowse";
 import LoadMore from "@/components/LoadMore";
+import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
+import SkeletonCardCreator from "@/components/skeleton/SkeletonCardCreator";
 import { apiKey, apiUrl } from "@/constants";
 import Image from "next/image";
 import React from "react";
@@ -27,12 +29,18 @@ const Creators = () => {
 
   return (
     <div>
-      <h1 className="text-6xl font-bold">Creators</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-        {creators.map((item, i) => (
-          <CardBrowse key={i} {...item} />
-        ))}
-      </div>
+       <h1 className="text-6xl font-bold mb-10">Creators</h1>
+      {creators.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {creators.map((item) => (
+            <CardBrowse key={item.id} {...item} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <SkeletonCardCreator cards={12} />
+        </div>
+      )}
       <div className="flex justify-center my-10">
         {isLoading && <span className="loader"></span>}
         {!isLastPage && !isLoading && (

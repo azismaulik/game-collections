@@ -45,11 +45,11 @@ export const browse = [
     name: "Stores",
     slug: "/games/stores",
   },
-  {
-    icon: "/browse/review.svg",
-    name: "Reviews",
-    slug: "/games/reviews",
-  },
+  // {
+  //   icon: "/browse/review.svg",
+  //   name: "Reviews",
+  //   slug: "/games/reviews",
+  // },
   {
     icon: "/browse/genre.svg",
     name: "Genres",

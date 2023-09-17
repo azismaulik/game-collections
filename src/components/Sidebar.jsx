@@ -7,6 +7,7 @@ import React from "react";
 const Sidebar = () => {
   const { pathname } = useRouter();
   const [isShown, setIsShown] = React.useState(false);
+
   return (
     <nav className="w-[250px] sticky max-h-screen overflow-auto top-0 bottom-0 flex flex-col p-6">
       <Link href="/" className="text-2xl font-bold">
@@ -81,7 +82,7 @@ const Sidebar = () => {
             priority
             className={`w-6 h-6 ${
               !isShown ? "rotate-90" : "-rotate-90"
-            } group-hover:opacity-70 rotate-90`}
+            } group-hover:opacity-70 transition`}
           />
         </div>
         <span className="transition text-neutral-500">
@@ -126,7 +127,7 @@ const Sidebar = () => {
         {genres.map((item) => (
           <li key={item.slug}>
             <Link
-              href={`/${item.slug}`}
+              href={`/games/genres/${item.slug}`}
               className="mt-2 flex gap-2 items-center font-semibold group"
             >
               <Image

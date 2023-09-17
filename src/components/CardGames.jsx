@@ -8,6 +8,9 @@ const xbox = "/platforms/xbox.svg";
 const nintendo = "/platforms/nintendo.svg";
 const ios = "/platforms/ios.svg";
 const android = "/platforms/android.svg";
+const mac = "/platforms/mac.svg";
+const linux = "/platforms/linux.svg";
+const web = "/platforms/web.svg";
 
 const CardGames = ({
   background_image,
@@ -20,11 +23,7 @@ const CardGames = ({
 }) => {
   const [isHover, setIsHover] = React.useState(false);
   return (
-    <div
-      className="flex-1 h-auto rounded-lg bg-neutral-900/70 relative"
-      onMouseEnter={() => setIsHover(true)}
-      onMouseLeave={() => setIsHover(false)}
-    >
+    <div className="flex-1 h-auto rounded-lg bg-neutral-900/70 relative hover:-translate-y-4 transition">
       <Link href={`/games/${slug}`}>
         {background_image && (
           <Image
@@ -37,38 +36,50 @@ const CardGames = ({
           />
         )}
       </Link>
-      <div className="p-4">
+      <div className="p-4 pb-6">
         <div className="flex justify-between my-2 items-center">
           <div className="flex gap-2 items-center">
-            {parent_platforms?.map((item, i) => (
-              <Image
-                key={i}
-                src={
-                  item.platform.slug === "pc"
-                    ? pc
-                    : item.platform.slug === "playstation"
-                    ? playstation
-                    : item.platform.slug === "xbox"
-                    ? xbox
-                    : item.platform.slug === "nintendo"
-                    ? nintendo
-                    : item.platform.slug === "ios"
-                    ? ios
-                    : item.platform.slug === "android"
-                    ? android
-                    : item.platform.slug === "mac"
-                    ? "/platforms/mac.svg"
-                    : item.platform.slug === "linux"
-                    ? "/platforms/linux.svg"
-                    : item.platform.slug === "web"
-                    ? "/platforms/web.svg"
-                    : ""
-                }
-                width={20}
-                height={20}
-                alt=""
-              />
-            ))}
+            {parent_platforms
+              ?.slice(
+                0,
+                parent_platforms.length > 6 ? 6 : parent_platforms.length
+              )
+              .map((item, i) => (
+                <Image
+                  key={i}
+                  src={
+                    item.platform.slug === "pc"
+                      ? pc
+                      : item.platform.slug === "playstation"
+                      ? playstation
+                      : item.platform.slug === "xbox"
+                      ? xbox
+                      : item.platform.slug === "nintendo"
+                      ? nintendo
+                      : item.platform.slug === "ios"
+                      ? ios
+                      : item.platform.slug === "android"
+                      ? android
+                      : item.platform.slug === "mac"
+                      ? mac
+                      : item.platform.slug === "linux"
+                      ? linux
+                      : item.platform.slug === "web"
+                      ? web
+                      : ""
+                  }
+                  width={20}
+                  height={20}
+                  alt=""
+                />
+              ))}
+            {parent_platforms.length > 6 ? (
+              <span className="text-sm text-green-500">
+                +{parent_platforms.length - 6}
+              </span>
+            ) : (
+              ""
+            )}
           </div>
           {metacritic && (
             <div className="py-1 px-2 border border-green-500 rounded">
@@ -80,8 +91,7 @@ const CardGames = ({
         </div>
         <Link
           href={`/games/${slug}`}
-          className="text-2xl font-bold mt-4 hover:text-neutral-400 transition"
-        >
+          className="text-2xl font-bold mt-4 hover:text-neutral-400 transition">
           {name}
         </Link>
         <div>
@@ -101,8 +111,7 @@ const CardGames = ({
                   <Link
                     key={i}
                     href={`/genres/${item.slug}`}
-                    className="text-xs underline hover:text-neutral-400 transition"
-                  >
+                    className="text-xs underline hover:text-neutral-400 transition">
                     {item.name}
                     {i === genres.length - 1 ? "" : ", "}
                   </Link>
@@ -112,13 +121,6 @@ const CardGames = ({
           ) : (
             ""
           )}
-          <Link
-            className="flex justify-between items-center mt-4 p-4 rounded-lg text-sm bg-neutral-800 hover:bg-neutral-800/70 transition text-neutral-200"
-            href={`/discover/games-like-${slug}`}
-          >
-            <span>Show more like this</span>
-            <Image src="/arrowRight.svg" alt="" width={20} height={20} />
-          </Link>
         </div>
       </div>
     </div>
