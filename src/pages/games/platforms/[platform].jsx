@@ -1,15 +1,75 @@
-import CardGames from "@/components/CardGames";
+import React from "react";
+import LoadMore from "@/components/LoadMore";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
 import { apiKey, apiUrl } from "@/constants";
 import { useRouter } from "next/router";
 
-const Platform = ({ games, error }) => {
+import dynamic from "next/dynamic";
+const CardGames = dynamic(() => import("@/components/CardGames"));
+
+const Platform = () => {
   const router = useRouter();
   const { platform } = router.query;
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  const [page, setPage] = React.useState(1);
+  const [games, setGames] = React.useState([]);
+  const [isLoadingPage, setIsLoadingPage] = React.useState(false);
+  const [isLastPage, setIsLastPage] = React.useState(false);
+
+  const getGamesByPlatform = async () => {
+    try {
+      setIsLoadingPage(true);
+      // Lakukan permintaan ke API RAWG untuk mendapatkan data platform
+      const platformMappingsResponse = await fetch(
+        `${apiUrl}/platforms?key=${apiKey}`
+      );
+
+      if (!platformMappingsResponse.ok) {
+        throw new Error("Failed to fetch platform data");
+      }
+
+      const platformMappingsData = await platformMappingsResponse.json();
+
+      // Buat pemetaan otomatis platform ke ID
+      const platformMappings = platformMappingsData.results.reduce(
+        (acc, platformData) => {
+          acc[platformData.slug] = platformData.id;
+          return acc;
+        },
+        {}
+      );
+
+      // Dapatkan ID platform dari pemetaan
+      const platformId = platformMappings[platform];
+
+      if (!platformId) {
+        return {
+          notFound: true, // Tampilkan 404 jika platform tidak ditemukan
+        };
+      }
+
+      // Lakukan permintaan ke API RAWG untuk mendapatkan data game berdasarkan platform
+      const gamesResponse = await fetch(
+        `${apiUrl}/games?key=${apiKey}&platforms=${platformId}&page=${page}`
+      );
+
+      if (!gamesResponse.ok) {
+        throw new Error("Failed to fetch game data");
+      }
+
+      const gamesData = await gamesResponse.json();
+      gamesData.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      setGames([...games, ...gamesData.results]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoadingPage(false);
+    }
+  };
+
+  React.useEffect(() => {
+    getGamesByPlatform();
+  }, [page]);
 
   return (
     <div>
@@ -25,69 +85,16 @@ const Platform = ({ games, error }) => {
           <SkeletonCardGames cards={12} />
         </div>
       )}
+
+      <div className="flex justify-center my-10">
+        {!isLastPage && !isLoadingPage ? (
+          <LoadMore setPage={() => setPage(page + 1)} />
+        ) : (
+          <span className="loader"></span>
+        )}
+      </div>
     </div>
   );
 };
-
-export async function getServerSideProps({ params }) {
-  const { platform } = params;
-
-  try {
-    // Lakukan permintaan ke API RAWG untuk mendapatkan data platform
-    const platformMappingsResponse = await fetch(
-      `${apiUrl}/platforms?key=${apiKey}`
-    );
-
-    if (!platformMappingsResponse.ok) {
-      throw new Error("Failed to fetch platform data");
-    }
-
-    const platformMappingsData = await platformMappingsResponse.json();
-
-    // Buat pemetaan otomatis platform ke ID
-    const platformMappings = platformMappingsData.results.reduce(
-      (acc, platformData) => {
-        acc[platformData.slug] = platformData.id;
-        return acc;
-      },
-      {}
-    );
-
-    // Dapatkan ID platform dari pemetaan
-    const platformId = platformMappings[platform];
-
-    if (!platformId) {
-      return {
-        notFound: true, // Tampilkan 404 jika platform tidak ditemukan
-      };
-    }
-
-    // Lakukan permintaan ke API RAWG untuk mendapatkan data game berdasarkan platform
-    const gamesResponse = await fetch(
-      `${apiUrl}/games?key=${apiKey}&platforms=${platformId}`
-    );
-
-    if (!gamesResponse.ok) {
-      throw new Error("Failed to fetch game data");
-    }
-
-    const gamesData = await gamesResponse.json();
-
-    return {
-      props: {
-        games: gamesData.results,
-        error: null,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return {
-      props: {
-        games: [],
-        error: { message: "Failed to fetch data" },
-      },
-    };
-  }
-}
 
 export default Platform;

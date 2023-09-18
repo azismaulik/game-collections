@@ -1,63 +1,64 @@
-import CardGames from "@/components/CardGames";
+import LoadMore from "@/components/LoadMore";
+import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
 import { apiKey, apiUrl } from "@/constants";
 import { useRouter } from "next/router";
+import React from "react";
 
-const Published = ({ games, error }) => {
+import dynamic from "next/dynamic";
+const CardGames = dynamic(() => import("@/components/CardGames"));
+
+const Published = () => {
   const router = useRouter();
   const { published } = router.query;
+  const [games, setGames] = React.useState([]);
+  const [page, setPage] = React.useState(1);
+  const [isLoadingPage, setIsLoadingPage] = React.useState(false);
+  const [isLastPage, setIsLastPage] = React.useState(false);
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+  const getGameByPublished = async () => {
+    try {
+      setIsLoadingPage(true);
+      const response = await fetch(
+        `${apiUrl}/games?key=${apiKey}&publishers=${published}&page=${page}`
+      );
+      const data = await response.json();
+      data.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      setGames([...games, ...data.results]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingPage(false);
+    }
+  };
+
+  React.useEffect(() => {
+    getGameByPublished();
+  }, [page]);
 
   return (
     <div>
-      <h1 className="text-6xl font-bold">Games published by {published}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-        {games.map((item, i) => (
-          <CardGames key={i} {...item} />
-        ))}
-      </div>
-      {/* <div className="flex justify-center my-10">
-        {isLoading && <span className="loader"></span>}
-        {!isLastPage && !isLoading && (
+      <h1 className="text-6xl font-bold mb-10">Games on {published}</h1>
+      {games.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {games.map((item) => (
+            <CardGames key={item.id} {...item} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <SkeletonCardGames cards={12} />
+        </div>
+      )}
+
+      <div className="flex justify-center my-10">
+        {!isLastPage && !isLoadingPage ? (
           <LoadMore setPage={() => setPage(page + 1)} />
+        ) : (
+          <span className="loader"></span>
         )}
-      </div> */}
+      </div>
     </div>
   );
 };
-
-export async function getServerSideProps({ params }) {
-  const { published } = params;
-
-  try {
-    // Lakukan permintaan ke API RAWG untuk mendapatkan data game berdasarkan published
-    const gamesResponse = await fetch(
-      `${apiUrl}/games?key=${apiKey}&publishers=${published}`
-    );
-
-    if (!gamesResponse.ok) {
-      throw new Error("Failed to fetch game data");
-    }
-
-    const gamesData = await gamesResponse.json();
-
-    return {
-      props: {
-        games: gamesData.results,
-        error: null,
-      },
-    };
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return {
-      props: {
-        games: [],
-        error: { message: "Failed to fetch data" },
-      },
-    };
-  }
-}
 
 export default Published;

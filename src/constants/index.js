@@ -91,7 +91,7 @@ export const genres = [
   {
     icon: "/genres/rpg.png",
     name: "RPG",
-    slug: "rpg",
+    slug: "role-playing-games-rpg",
   },
   {
     icon: "/genres/shooter.png",

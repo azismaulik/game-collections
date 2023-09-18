@@ -1,9 +1,10 @@
 import React from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { apiKey, apiUrl } from "@/constants";
-import CardBrowse from "@/components/CardBrowse";
 import TitleBrowse from "@/components/TitleBrowse";
+import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
+
+import dynamic from "next/dynamic";
+const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Browse = () => {
   const [platforms, setPlatforms] = React.useState([]);
@@ -89,71 +90,113 @@ const Browse = () => {
         title="Platforms"
         length={lengthPlatforms.toLocaleString()}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-        {platforms?.slice(0, 4).map((item) => (
-          <CardBrowse key={item.id} {...item} />
-        ))}
-      </div>
+      {platforms?.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          {platforms?.slice(0, 4).map((item) => (
+            <CardBrowse pathname="/games/platforms" key={item.id} {...item} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          <SkeletonCardBrowse cards={4} />
+        </div>
+      )}
       <TitleBrowse
         href="/games/genres"
         title="Genres"
         length={lengthGenres.toLocaleString()}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-        {genres?.slice(0, 4).map((item) => (
-          <CardBrowse key={item.id} {...item} />
-        ))}
-      </div>
+      {genres?.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          {genres?.slice(0, 4).map((item) => (
+            <CardBrowse pathname="/games/genres" key={item.id} {...item} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          <SkeletonCardBrowse cards={4} />
+        </div>
+      )}
       <TitleBrowse
         href="/games/tags"
         title="Tags"
         length={lengthTags.toLocaleString()}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-        {tags?.slice(0, 4).map((item) => (
-          <CardBrowse key={item.id} {...item} />
-        ))}
-      </div>
+      {tags?.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          {tags?.slice(0, 4).map((item) => (
+            <CardBrowse pathname="/games/tags" key={item.id} {...item} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          <SkeletonCardBrowse cards={4} />
+        </div>
+      )}
       <TitleBrowse
         href="/creators"
         title="Creators"
         length={lengthCreators.toLocaleString()}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-        {creators?.slice(0, 4).map((item) => (
-          <CardBrowse key={item.id} {...item} />
-        ))}
-      </div>
+      {creators?.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          {creators?.slice(0, 4).map((item) => (
+            <CardBrowse pathname="/creators" key={item.id} {...item} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          <SkeletonCardBrowse cards={4} />
+        </div>
+      )}
       <TitleBrowse
         href="/developers"
         title="Developers"
         length={lengthDevelopers.toLocaleString()}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-        {developers?.slice(0, 4).map((item) => (
-          <CardBrowse key={item.id} {...item} />
-        ))}
-      </div>
+      {developers?.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          {developers?.slice(0, 4).map((item) => (
+            <CardBrowse pathname="/developers" key={item.id} {...item} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          <SkeletonCardBrowse cards={4} />
+        </div>
+      )}
       <TitleBrowse
         href="/publishers"
         title="Publishers"
         length={lengthPublishers.toLocaleString()}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-        {publishers?.slice(0, 4).map((item) => (
-          <CardBrowse key={item.id} {...item} />
-        ))}
-      </div>
+      {publishers?.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          {publishers?.slice(0, 4).map((item) => (
+            <CardBrowse pathname="/publishers" key={item.id} {...item} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          <SkeletonCardBrowse cards={4} />
+        </div>
+      )}
       <TitleBrowse
         href="/games/stores"
         title="Stores"
         length={lengthStores.toLocaleString()}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
-        {stores?.slice(0, 4).map((item) => (
-          <CardBrowse key={item.id} {...item} />
-        ))}
-      </div>
+      {stores?.length ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          {stores?.slice(0, 4).map((item) => (
+            <CardBrowse pathname="/games/stores" key={item.id} {...item} />
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+          <SkeletonCardBrowse cards={4} />
+        </div>
+      )}
     </div>
   );
 };

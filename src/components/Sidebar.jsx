@@ -89,7 +89,7 @@ const Sidebar = () => {
           {isShown ? "Hide" : "Show all"}
         </span>
       </button>
-      <Link href="/platforms" className="text-xl font-bold mt-4">
+      <Link href="/games/platforms" className="text-xl font-bold mt-4">
         Platforms
       </Link>
       {platforms.map((item) => (

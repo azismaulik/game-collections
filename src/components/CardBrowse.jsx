@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
 
 const CardBrowse = ({
@@ -10,8 +9,8 @@ const CardBrowse = ({
   games_count,
   slug,
   image,
+  pathname,
 }) => {
-  const { pathname } = useRouter();
   return (
     <div
       className="rounded-lg bg-cover bg-center relative"

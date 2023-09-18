@@ -40,6 +40,20 @@ nav::-webkit-scrollbar-thumb:hover {
   background: #6666;
 }
 
+.scrollbar::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #5555;
+}
+
+/* Handle on hover */
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #6666;
+}
+
 .loader {
   width: 48px;
   height: 48px;

@@ -1,10 +1,10 @@
-import CardBrowse from "@/components/CardBrowse";
 import LoadMore from "@/components/LoadMore";
-import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
 import SkeletonCardCreator from "@/components/skeleton/SkeletonCardCreator";
 import { apiKey, apiUrl } from "@/constants";
-import Image from "next/image";
 import React from "react";
+
+import dynamic from "next/dynamic";
+const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Creators = () => {
   const [creators, setCreators] = React.useState([]);
@@ -29,11 +29,11 @@ const Creators = () => {
 
   return (
     <div>
-       <h1 className="text-6xl font-bold mb-10">Creators</h1>
+      <h1 className="text-6xl font-bold mb-10">Creators</h1>
       {creators.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {creators.map((item) => (
-            <CardBrowse key={item.id} {...item} />
+            <CardBrowse pathname="/creators" key={item.id} {...item} />
           ))}
         </div>
       ) : (

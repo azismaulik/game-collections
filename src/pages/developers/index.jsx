@@ -1,8 +1,10 @@
-import CardBrowse from "@/components/CardBrowse";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
 import { apiKey, apiUrl } from "@/constants";
 import React from "react";
+
+import dynamic from "next/dynamic";
+const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Developers = () => {
   const [developers, setDevelopers] = React.useState([]);
@@ -27,11 +29,11 @@ const Developers = () => {
 
   return (
     <div>
-       <h1 className="text-6xl font-bold mb-10">Developers</h1>
+      <h1 className="text-6xl font-bold mb-10">Developers</h1>
       {developers.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {developers.map((item) => (
-            <CardBrowse key={item.id} {...item} />
+            <CardBrowse pathname="/developers" key={item.id} {...item} />
           ))}
         </div>
       ) : (

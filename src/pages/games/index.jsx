@@ -1,8 +1,10 @@
 import React from "react";
 import { apiKey, apiUrl } from "@/constants";
-import CardGames from "@/components/CardGames";
-import LoadMore from "@/components/LoadMore";
+import dynamic from "next/dynamic";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
+
+const CardGames = dynamic(() => import("@/components/CardGames"));
+import LoadMore from "@/components/LoadMore";
 
 export default function Games() {
   const [games, setGames] = React.useState([]);

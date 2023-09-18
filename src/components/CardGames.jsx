@@ -21,7 +21,6 @@ const CardGames = ({
   released,
   slug,
 }) => {
-  const [isHover, setIsHover] = React.useState(false);
   return (
     <div className="flex-1 h-auto rounded-lg bg-neutral-900/70 relative hover:-translate-y-4 transition">
       <Link href={`/games/${slug}`}>
@@ -29,9 +28,9 @@ const CardGames = ({
           <Image
             src={background_image}
             alt=""
-            width={400}
-            height={200}
-            className="rounded-t-lg w-full h-[200px] object-cover max-h-full"
+            width={500}
+            height={500}
+            className="rounded-t-lg w-full h-[200px] object-cover"
             priority
           />
         )}
@@ -71,6 +70,8 @@ const CardGames = ({
                   width={20}
                   height={20}
                   alt=""
+                  className="w-5 h-5"
+                  priority
                 />
               ))}
             {parent_platforms.length > 6 ? (
@@ -91,7 +92,8 @@ const CardGames = ({
         </div>
         <Link
           href={`/games/${slug}`}
-          className="text-2xl font-bold mt-4 hover:text-neutral-400 transition">
+          className="text-2xl font-bold mt-4 hover:text-neutral-400 transition"
+        >
           {name}
         </Link>
         <div>
@@ -111,7 +113,8 @@ const CardGames = ({
                   <Link
                     key={i}
                     href={`/genres/${item.slug}`}
-                    className="text-xs underline hover:text-neutral-400 transition">
+                    className="text-xs underline hover:text-neutral-400 transition"
+                  >
                     {item.name}
                     {i === genres.length - 1 ? "" : ", "}
                   </Link>

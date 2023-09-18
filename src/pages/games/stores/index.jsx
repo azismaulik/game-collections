@@ -1,8 +1,10 @@
-import CardBrowse from "@/components/CardBrowse";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
 import { apiKey, apiUrl } from "@/constants";
 import React from "react";
+
+import dynamic from "next/dynamic";
+const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Stores = () => {
   const [stores, setStores] = React.useState([]);
@@ -29,7 +31,7 @@ const Stores = () => {
       {stores.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {stores.map((item) => (
-            <CardBrowse key={item.id} {...item} />
+            <CardBrowse pathname="/games/stores" key={item.id} {...item} />
           ))}
         </div>
       ) : (

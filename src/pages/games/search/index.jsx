@@ -1,7 +1,9 @@
 import React from "react";
 import { apiKey, apiUrl } from "@/constants";
-import CardGames from "@/components/CardGames";
 import LoadMore from "@/components/LoadMore";
+
+import dynamic from "next/dynamic";
+const CardGames = dynamic(() => import("@/components/CardGames"));
 
 export default function Search() {
   const [games, setGames] = React.useState([]);
