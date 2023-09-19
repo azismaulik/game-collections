@@ -1,4 +1,6 @@
+import CardBrowse from "@/components/CardBrowse";
 import { apiKey, apiUrl } from "@/constants";
+import { formatDate } from "@/utils/formatDate";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -20,6 +22,14 @@ const Title = () => {
   const [data, setData] = React.useState({});
   const [video, setVideo] = React.useState("");
   const [fotos, setFotos] = React.useState([]);
+  const [stores, setStores] = React.useState([]);
+  const [buy, setBuy] = React.useState([]);
+  const [show, setShow] = React.useState(false);
+  const [show2, setShow2] = React.useState(false);
+  const [gameSeries, setGameSeries] = React.useState([]);
+  const [additions, setAdditions] = React.useState([]);
+  const [team, setTeam] = React.useState([]);
+  const [posts, setPosts] = React.useState([]);
 
   const getDetailGame = async () => {
     try {
@@ -55,14 +65,89 @@ const Title = () => {
     }
   };
 
+  const getStores = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/stores?key=${apiKey}`);
+      const data = await response.json();
+      setStores(data.results);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getStoreBuy = async () => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/games/${title}/stores?key=${apiKey}`
+      );
+      const data = await response.json();
+      setBuy(data.results);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getGameSeries = async () => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/games/${title}/game-series?key=${apiKey}`
+      );
+      const data = await response.json();
+      setGameSeries(data.results);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAdditions = async () => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/games/${title}/additions?key=${apiKey}`
+      );
+      const data = await response.json();
+      setAdditions(data.results);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getTeam = async () => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/games/${title}/development-team?key=${apiKey}`
+      );
+      const data = await response.json();
+      setTeam(data.results);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getPosts = async () => {
+    try {
+      const response = await fetch(
+        `${apiUrl}/games/${title}/reddit?key=${apiKey}`
+      );
+      const data = await response.json();
+      setPosts(data.results);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   React.useEffect(() => {
     getDetailGame();
     getFoto();
     getVideos();
-  }, []);
+    getStores();
+    getStoreBuy();
+    getGameSeries();
+    getAdditions();
+    getTeam();
+    getPosts();
+  }, [title]);
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="container mx-auto">
       <div className="flex gap-1 text-xs uppercase">
         <Link href="/">Home</Link>
         <span>/</span>
@@ -73,7 +158,7 @@ const Title = () => {
       <div>
         <div className="flex gap-4 items-center">
           <div className="text-black px-2 rounded-lg bg-white text-sm font-semibold">
-            {data.released}
+            {formatDate(data.released)}
           </div>
           <div className="flex gap-2 items-center my-4">
             {data.parent_platforms?.map((item, i) => (
@@ -111,18 +196,175 @@ const Title = () => {
             Average playtime: {data?.playtime} hours
           </p>
         </div>
-        <div className="w-full grid grid-cols-5 gap-4">
-          <div className="col-span-3">
+        <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="md:col-span-3">
             <h1 className="text-6xl font-bold">{data.name}</h1>
             <h1 className="text-2xl font-bold mt-6 mb-3 border-bottom w-max">
               About
             </h1>
             <div
-              dangerouslySetInnerHTML={{ __html: data?.description }}
-              className="whitespace-pre-line text-sm font-semibold"
+              dangerouslySetInnerHTML={{ __html: data?.description_raw }}
+              className={`whitespace-pre-wrap text-sm ${
+                show ? "line-clamp-none" : "line-clamp-6"
+              }`}
             />
+            <p
+              className={`px-2 rounded-lg pb-1 font-semibold text-xs w-max cursor-pointer transition mt-4 ${
+                show
+                  ? "bg-neutral-800 text-neutral-100 hover:bg-neutral-100 hover:text-neutral-800"
+                  : "bg-neutral-100 text-neutral-800 hover:bg-neutral-800 hover:text-neutral-100"
+              }`}
+              onClick={() => setShow(!show)}
+            >
+              {show ? "read less" : "read more"}
+            </p>
+            <div className="grid grid-cols-2 gap-4 mt-6">
+              <div>
+                <h1 className="text-neutral-600 mb-2 font-bold">Platforms</h1>
+                {data?.platforms?.map((item, i) => (
+                  <Link
+                    key={i}
+                    href={`/games/platforms/${item.platform.slug}` || ""}
+                    className="border-bottom text-neutral-200 hover:text-neutral-500 transition mr-1"
+                  >
+                    {item.platform.name}
+                    {i !== data.platforms.length - 1 ? "," : ""}
+                  </Link>
+                ))}
+              </div>
+              <div>
+                <h1 className="text-neutral-600 mb-2 font-bold">Metascore</h1>
+                <div className="text-green-500 font-bold border border-green-500 py-1 px-2 rounded w-max">
+                  <span>{data.metacritic}</span>
+                </div>
+              </div>
+              <div>
+                <h1 className="text-neutral-600 mb-2 font-bold">Genres</h1>
+                {data?.genres?.map((item, i) => (
+                  <Link
+                    key={i}
+                    href={`/games/genres/${item.slug}` || ""}
+                    className="border-bottom text-neutral-200 hover:text-neutral-500 transition mr-1"
+                  >
+                    {item.name}
+                    {i !== data?.genres.length - 1 ? "," : ""}
+                  </Link>
+                ))}
+              </div>
+              <div>
+                <h1 className="text-neutral-600 mb-2 font-bold">
+                  Release date
+                </h1>
+                <p className="font-semibold text-neutral-200">
+                  {formatDate(data.released)}
+                </p>
+              </div>
+              <div>
+                <h1 className="text-neutral-600 mb-2 font-bold">Developers</h1>
+                {data?.developers?.map((item, i) => (
+                  <Link
+                    key={i}
+                    href={`/developers/${item.slug}` || ""}
+                    className="border-bottom text-neutral-200 hover:text-neutral-500 transition mr-1"
+                  >
+                    {item.name}
+                    {i !== data?.developers.length - 1 ? "," : ""}
+                  </Link>
+                ))}
+              </div>
+              <div>
+                <h1 className="text-neutral-600 mb-2 font-bold">Publishers</h1>
+                {data?.publishers?.map((item, i) => (
+                  <Link
+                    key={i}
+                    href={`/publishers/${item.slug}` || ""}
+                    className="border-bottom text-neutral-200 hover:text-neutral-500 transition mr-1"
+                  >
+                    {item.name}
+                    {i !== data?.publishers.length - 1 ? "," : ""}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h1 className="text-neutral-600 mb-2 font-bold mt-6">
+                Other games in the series
+              </h1>
+              {gameSeries?.map((item, i) => (
+                <Link
+                  key={i}
+                  href={`/games/${item.slug}` || ""}
+                  className="border-bottom text-neutral-200 hover:text-neutral-500 transition mr-1"
+                >
+                  {item.name}
+                  {i !== gameSeries.length - 1 ? "," : ""}
+                </Link>
+              ))}
+            </div>
+            <div>
+              <h1 className="text-neutral-600 mb-2 font-bold mt-6">
+                DLC's and editions
+              </h1>
+              {additions?.map((item, i) => (
+                <Link
+                  key={i}
+                  href={`/games/${item.slug}` || ""}
+                  className="border-bottom text-neutral-200 hover:text-neutral-500 transition mr-1"
+                >
+                  {item.name}
+                  {i !== additions.length - 1 ? "," : ""}
+                </Link>
+              ))}
+            </div>
+            <div>
+              <h1 className="text-neutral-600 mb-2 font-bold mt-6">Tags</h1>
+              {data?.tags?.map((item, i) => (
+                <Link
+                  key={i}
+                  href={`/games/tags/${item.slug}` || ""}
+                  className="border-bottom text-neutral-200 hover:text-neutral-500 transition mr-1"
+                >
+                  {item.name}
+                  {i !== data?.tags?.length - 1 ? "," : ""}
+                </Link>
+              ))}
+            </div>
+            <div>
+              <h1 className="text-neutral-600 mb-2 font-bold mt-6">Website</h1>
+              <Link
+                href={data?.website || ""}
+                target="_blank"
+                className="font-semibold text-neutral-200 border-bottom hover:text-neutral-500 transition"
+              >
+                {data?.website}
+              </Link>
+            </div>
+            <div className={`${show2 ? "line-clamp-none" : "line-clamp-3"}`}>
+              {data?.platforms?.map((item, i) => (
+                <React.Fragment key={i}>
+                  <h1 className="text-xl font-bold text-neutral-200 mt-6">
+                    System requirements for {item.platform.name}
+                  </h1>
+
+                  <div className="grid grid-cols-2 gap-4 text-xs leading-4 tracking-wide mt-2">
+                    <p>{item.requirements?.minimum}</p>
+                    <p>{item.requirements?.recommended}</p>
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+            <p
+              className={`px-2 rounded-lg pb-1 font-semibold text-xs w-max cursor-pointer transition mt-4 ${
+                show2
+                  ? "bg-neutral-800 text-neutral-100 hover:bg-neutral-100 hover:text-neutral-800"
+                  : "bg-neutral-100 text-neutral-800 hover:bg-neutral-800 hover:text-neutral-100"
+              }`}
+              onClick={() => setShow2(!show2)}
+            >
+              {show2 ? "show less" : "show more"}
+            </p>
           </div>
-          <div className="col-span-2">
+          <div className="hidden md:block md:col-span-2">
             {video && (
               <video
                 autoPlay
@@ -142,7 +384,7 @@ const Title = () => {
                     alt=""
                     width={150}
                     height={150}
-                    className="rounded-lg w-auto h-auto"
+                    className="rounded-lg w-full h-auto aspect-video"
                   />
                 </div>
               ))}
@@ -153,7 +395,7 @@ const Title = () => {
                     alt=""
                     width={150}
                     height={150}
-                    className="rounded-lg w-auto h-auto opacity-25 absolute"
+                    className="rounded-lg w-auto h-auto opacity-25 absolute aspect-video"
                   />
                 )}
                 <p className="font-semibold text-sm text-neutral-300">...</p>
@@ -162,6 +404,65 @@ const Title = () => {
                 </p>
               </div>
             </div>
+            <h1 className="mt-6 font-semibold text-neutral-500 text-lg">
+              Where to buy
+            </h1>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              {buy?.map((item, i) => (
+                <Link
+                  className="text-sm text-center p-2 rounded-lg bg-neutral-800 hover:bg-neutral-100 text-neutral-400 hover:text-neutral-800 transition"
+                  key={i}
+                  href={item.url}
+                  target="_blank"
+                >
+                  {stores.map((store, i) => (
+                    <span key={i}>
+                      {item.store_id === store.id && store.name}
+                    </span>
+                  ))}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="mt-8">
+          <h1 className="text-2xl font-bold text-neutral-100">
+            {data?.name} created by
+          </h1>
+          <div className="flex gap-4 overflow-auto scrollbar py-4">
+            {team?.map((item, i) => (
+              <CardBrowse
+                pathname="/creators"
+                classNames="min-w-[25%]"
+                key={i}
+                {...item}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="mt-8">
+          <div className="flex gap-2 items-center">
+            <h1 className="text-2xl font-bold text-neutral-100">
+              {data?.name} posts{" "}
+            </h1>
+            <Image src="/reddit.png" alt="" width={50} height={50} />
+          </div>
+          <div className="grid grid-cols-3 gap-4 py-4">
+            {posts?.slice(0, 6).map((item, i) => (
+              <div key={i}>
+                <Link
+                  href={item.url}
+                  target="_blank"
+                  className="text-lg font-bold hover:text-neutral-500 transition"
+                >
+                  {item.name}
+                </Link>
+                <p className="text-sm text-neutral-500 font-semibold mt-2">
+                  {formatDate(item.created)} by{" "}
+                  {item.username.replace("/u/", "")}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { formatDate } from "@/utils/formatDate";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -102,7 +103,7 @@ const CardGames = ({
               <p className="text-xs text-neutral-500 font-semibold">
                 Release date:
               </p>
-              <p className="text-xs">{released}</p>
+              <p className="text-xs">{formatDate(released)}</p>
             </div>
           )}
           {genres.length ? (

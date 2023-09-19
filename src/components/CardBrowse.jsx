@@ -10,10 +10,11 @@ const CardBrowse = ({
   slug,
   image,
   pathname,
+  classNames,
 }) => {
   return (
     <div
-      className="rounded-lg bg-cover bg-center relative"
+      className={`rounded-lg bg-cover bg-center relative ${classNames}`}
       style={{ backgroundImage: `url(${image_background})` }}
     >
       <div className="bg-gradient-to-b from-neutral-900/60 to-neutral-900/95 p-6 pt-10 h-full rounded-lg">
