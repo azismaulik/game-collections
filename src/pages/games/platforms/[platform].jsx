@@ -69,15 +69,15 @@ const Platform = () => {
 
   React.useEffect(() => {
     getGamesByPlatform();
-  }, [page]);
+  }, [page, platform]);
 
   return (
     <div>
       <h1 className="text-6xl font-bold mb-10">Games on {platform}</h1>
       {games.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {games.map((item) => (
-            <CardGames key={item.id} {...item} />
+          {games.map((item, i) => (
+            <CardGames key={i} {...item} />
           ))}
         </div>
       ) : (

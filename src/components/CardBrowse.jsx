@@ -11,10 +11,11 @@ const CardBrowse = ({
   image,
   pathname,
   classNames,
+  positions,
 }) => {
   return (
     <div
-      className={`rounded-lg bg-cover bg-center relative ${classNames}`}
+      className={`rounded-lg bg-cover bg-center ${classNames}`}
       style={{ backgroundImage: `url(${image_background})` }}
     >
       <div className="bg-gradient-to-b from-neutral-900/60 to-neutral-900/95 p-6 pt-10 h-full rounded-lg">
@@ -34,6 +35,14 @@ const CardBrowse = ({
           >
             {name}
           </Link>
+        </div>
+        <div className="flex justify-center mt-1 gap-1">
+          {positions?.map((item, i) => (
+            <p key={i}>
+              {item.name}
+              {i === positions?.length - 1 ? "" : ", "}
+            </p>
+          ))}
         </div>
         <div className="flex justify-between items-center mt-6 mb-4 py-2 border-b border-neutral-500">
           <h1 className="font-bold">Popular items</h1>

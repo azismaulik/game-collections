@@ -147,78 +147,81 @@ const Title = () => {
   }, [title]);
 
   return (
-    <div className="container mx-auto">
-      <div className="flex gap-1 text-xs uppercase">
+    <div>
+      <div className="flex justify-center md:justify-start gap-1 text-xs uppercase mb-6">
         <Link href="/">Home</Link>
         <span>/</span>
         <Link href="/games">Games</Link>
         <span>/</span>
         <p>{data.name}</p>
       </div>
-      <div>
-        <div className="flex gap-4 items-center">
-          <div className="text-black px-2 rounded-lg bg-white text-sm font-semibold">
-            {formatDate(data.released)}
-          </div>
-          <div className="flex gap-2 items-center my-4">
-            {data.parent_platforms?.map((item, i) => (
-              <Image
-                key={i}
-                src={
-                  item.platform.slug === "pc"
-                    ? pc
-                    : item.platform.slug === "playstation"
-                    ? playstation
-                    : item.platform.slug === "xbox"
-                    ? xbox
-                    : item.platform.slug === "nintendo"
-                    ? nintendo
-                    : item.platform.slug === "ios"
-                    ? ios
-                    : item.platform.slug === "android"
-                    ? android
-                    : item.platform.slug === "mac"
-                    ? mac
-                    : item.platform.slug === "linux"
-                    ? linux
-                    : item.platform.slug === "web"
-                    ? web
-                    : ""
-                }
-                width={20}
-                height={20}
-                alt=""
-                className="w-5 h-5"
-              />
-            ))}
-          </div>
-          <p className="text-sm uppercase">
-            Average playtime: {data?.playtime} hours
-          </p>
+      <div className="flex justify-center md:justify-start flex-wrap gap-2 items-center">
+        <div className="text-black px-2 rounded-lg bg-white text-sm font-semibold">
+          {formatDate(data.released)}
         </div>
-        <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div className="md:col-span-3">
-            <h1 className="text-6xl font-bold">{data.name}</h1>
-            <h1 className="text-2xl font-bold mt-6 mb-3 border-bottom w-max">
-              About
-            </h1>
-            <div
-              dangerouslySetInnerHTML={{ __html: data?.description_raw }}
-              className={`whitespace-pre-wrap text-sm ${
-                show ? "line-clamp-none" : "line-clamp-6"
-              }`}
+        <div className="flex gap-2 items-center my-4">
+          {data.parent_platforms?.map((item, i) => (
+            <Image
+              key={i}
+              src={
+                item.platform.slug === "pc"
+                  ? pc
+                  : item.platform.slug === "playstation"
+                  ? playstation
+                  : item.platform.slug === "xbox"
+                  ? xbox
+                  : item.platform.slug === "nintendo"
+                  ? nintendo
+                  : item.platform.slug === "ios"
+                  ? ios
+                  : item.platform.slug === "android"
+                  ? android
+                  : item.platform.slug === "mac"
+                  ? mac
+                  : item.platform.slug === "linux"
+                  ? linux
+                  : item.platform.slug === "web"
+                  ? web
+                  : ""
+              }
+              width={20}
+              height={20}
+              alt=""
+              className="w-5 h-5"
             />
-            <p
-              className={`px-2 rounded-lg pb-1 font-semibold text-xs w-max cursor-pointer transition mt-4 ${
-                show
-                  ? "bg-neutral-800 text-neutral-100 hover:bg-neutral-100 hover:text-neutral-800"
-                  : "bg-neutral-100 text-neutral-800 hover:bg-neutral-800 hover:text-neutral-100"
-              }`}
-              onClick={() => setShow(!show)}
-            >
-              {show ? "read less" : "read more"}
-            </p>
-            <div className="grid grid-cols-2 gap-4 mt-6">
+          ))}
+        </div>
+        <p className="text-sm uppercase">
+          Average playtime: {data?.playtime} hours
+        </p>
+      </div>
+      <h1 className="text-center md:text-start text-4xl md:text-6xl font-bold">
+        {data?.name}
+      </h1>
+      <div className="flex flex-wrap gap-[5%]">
+        <div className="w-full md:w-[65%] order-2 md:order-1">
+          <h1 className="text-2xl font-bold mt-6 mb-3 border-bottom w-max">
+            About
+          </h1>
+          <p
+            className={`whitespace-pre-wrap text-sm ${
+              show ? "line-clamp-none" : "line-clamp-6"
+            }`}
+          >
+            {data.description_raw}
+          </p>
+          <p
+            className={`px-2 rounded-lg pb-1 font-semibold text-xs w-max cursor-pointer transition mt-4 ${
+              show
+                ? "bg-neutral-800 text-neutral-100 hover:bg-neutral-100 hover:text-neutral-800"
+                : "bg-neutral-100 text-neutral-800 hover:bg-neutral-800 hover:text-neutral-100"
+            }`}
+            onClick={() => setShow(!show)}
+          >
+            {show ? "read less" : "read more"}
+          </p>
+          <div className="my-6 grid grid-cols-2 gap-6">
+            {data?.platforms?.length ? (
               <div>
                 <h1 className="text-neutral-600 mb-2 font-bold">Platforms</h1>
                 {data?.platforms?.map((item, i) => (
@@ -232,12 +235,20 @@ const Title = () => {
                   </Link>
                 ))}
               </div>
+            ) : (
+              ""
+            )}
+            {data?.metacritic ? (
               <div>
                 <h1 className="text-neutral-600 mb-2 font-bold">Metascore</h1>
                 <div className="text-green-500 font-bold border border-green-500 py-1 px-2 rounded w-max">
                   <span>{data.metacritic}</span>
                 </div>
               </div>
+            ) : (
+              ""
+            )}
+            {data?.genres?.length ? (
               <div>
                 <h1 className="text-neutral-600 mb-2 font-bold">Genres</h1>
                 {data?.genres?.map((item, i) => (
@@ -251,6 +262,10 @@ const Title = () => {
                   </Link>
                 ))}
               </div>
+            ) : (
+              ""
+            )}
+            {data?.released ? (
               <div>
                 <h1 className="text-neutral-600 mb-2 font-bold">
                   Release date
@@ -259,6 +274,10 @@ const Title = () => {
                   {formatDate(data.released)}
                 </p>
               </div>
+            ) : (
+              ""
+            )}
+            {data?.developers?.length ? (
               <div>
                 <h1 className="text-neutral-600 mb-2 font-bold">Developers</h1>
                 {data?.developers?.map((item, i) => (
@@ -272,6 +291,10 @@ const Title = () => {
                   </Link>
                 ))}
               </div>
+            ) : (
+              ""
+            )}
+            {data?.publishers?.length ? (
               <div>
                 <h1 className="text-neutral-600 mb-2 font-bold">Publishers</h1>
                 {data?.publishers?.map((item, i) => (
@@ -285,7 +308,11 @@ const Title = () => {
                   </Link>
                 ))}
               </div>
-            </div>
+            ) : (
+              ""
+            )}
+          </div>
+          {gameSeries?.length ? (
             <div>
               <h1 className="text-neutral-600 mb-2 font-bold mt-6">
                 Other games in the series
@@ -301,6 +328,10 @@ const Title = () => {
                 </Link>
               ))}
             </div>
+          ) : (
+            ""
+          )}
+          {additions?.length ? (
             <div>
               <h1 className="text-neutral-600 mb-2 font-bold mt-6">
                 DLC's and editions
@@ -316,6 +347,10 @@ const Title = () => {
                 </Link>
               ))}
             </div>
+          ) : (
+            ""
+          )}
+          {data?.tags?.length ? (
             <div>
               <h1 className="text-neutral-600 mb-2 font-bold mt-6">Tags</h1>
               {data?.tags?.map((item, i) => (
@@ -329,117 +364,85 @@ const Title = () => {
                 </Link>
               ))}
             </div>
-            <div>
-              <h1 className="text-neutral-600 mb-2 font-bold mt-6">Website</h1>
-              <Link
-                href={data?.website || ""}
-                target="_blank"
-                className="font-semibold text-neutral-200 border-bottom hover:text-neutral-500 transition"
-              >
-                {data?.website}
-              </Link>
-            </div>
-            <div className={`${show2 ? "line-clamp-none" : "line-clamp-3"}`}>
-              {data?.platforms?.map((item, i) => (
-                <React.Fragment key={i}>
-                  <h1 className="text-xl font-bold text-neutral-200 mt-6">
-                    System requirements for {item.platform.name}
-                  </h1>
-
-                  <div className="grid grid-cols-2 gap-4 text-xs leading-4 tracking-wide mt-2">
-                    <p>{item.requirements?.minimum}</p>
-                    <p>{item.requirements?.recommended}</p>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-            <p
-              className={`px-2 rounded-lg pb-1 font-semibold text-xs w-max cursor-pointer transition mt-4 ${
-                show2
-                  ? "bg-neutral-800 text-neutral-100 hover:bg-neutral-100 hover:text-neutral-800"
-                  : "bg-neutral-100 text-neutral-800 hover:bg-neutral-800 hover:text-neutral-100"
-              }`}
-              onClick={() => setShow2(!show2)}
-            >
-              {show2 ? "show less" : "show more"}
-            </p>
-          </div>
-          <div className="hidden md:block md:col-span-2">
-            {video && (
-              <video
-                autoPlay
-                controls
-                muted
-                className="aspect-video rounded-lg"
-              >
-                <source src={video} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            )}
-            <div className="grid grid-cols-2 gap-4">
-              {fotos?.slice(0, 3).map((item, i) => (
-                <div key={i}>
-                  <Image
-                    src={item.image}
-                    alt=""
-                    width={150}
-                    height={150}
-                    className="rounded-lg w-full h-auto aspect-video"
-                  />
-                </div>
-              ))}
-              <div className="w-full h-full bg-neutral-800 rounded-lg relative flex flex-col justify-center items-center">
-                {data?.background_image && (
-                  <Image
-                    src={data.background_image}
-                    alt=""
-                    width={150}
-                    height={150}
-                    className="rounded-lg w-auto h-auto opacity-25 absolute aspect-video"
-                  />
-                )}
-                <p className="font-semibold text-sm text-neutral-300">...</p>
-                <p className="font-semibold text-sm text-neutral-300">
-                  view all
-                </p>
+          ) : (
+            ""
+          )}
+        </div>
+        <div className="w-full md:w-[30%] order-1 md:order-2 mt-4">
+          {video && (
+            <video autoPlay controls muted className="aspect-video rounded-lg">
+              <source src={video} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          )}
+          <div className="grid grid-cols-2 gap-4">
+            {fotos?.slice(0, 3).map((item, i) => (
+              <div key={i} className="min-w-[150px]">
+                <Image
+                  src={item.image}
+                  alt=""
+                  width={150}
+                  height={150}
+                  className="rounded-lg w-full h-full aspect-video"
+                />
               </div>
+            ))}
+            <div className="min-w-[150px] h-auto md:w-full md:h-full bg-neutral-800 rounded-lg relative flex flex-col justify-center items-center">
+              {data?.background_image && (
+                <Image
+                  src={data.background_image}
+                  alt=""
+                  width={150}
+                  height={150}
+                  className="rounded-lg w-auto h-auto opacity-25 absolute aspect-video"
+                />
+              )}
+              <p className="font-semibold text-sm text-neutral-300">...</p>
+              <p className="font-semibold text-sm text-neutral-300">view all</p>
             </div>
-            <h1 className="mt-6 font-semibold text-neutral-500 text-lg">
-              Where to buy
-            </h1>
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              {buy?.map((item, i) => (
-                <Link
-                  className="text-sm text-center p-2 rounded-lg bg-neutral-800 hover:bg-neutral-100 text-neutral-400 hover:text-neutral-800 transition"
-                  key={i}
-                  href={item.url}
-                  target="_blank"
-                >
-                  {stores.map((store, i) => (
-                    <span key={i}>
-                      {item.store_id === store.id && store.name}
-                    </span>
-                  ))}
-                </Link>
-              ))}
-            </div>
+          </div>
+          <h1 className="mt-6 font-semibold text-neutral-500 text-lg">
+            Where to buy
+          </h1>
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            {buy?.map((item, i) => (
+              <Link
+                className="text-sm text-center p-2 rounded-lg bg-neutral-800 hover:bg-neutral-100 text-neutral-400 hover:text-neutral-800 transition"
+                key={i}
+                href={item.url}
+                target="_blank"
+              >
+                {stores.map((store, i) => (
+                  <span key={i}>
+                    {item.store_id === store.id && store.name}
+                  </span>
+                ))}
+              </Link>
+            ))}
           </div>
         </div>
-        <div className="mt-8">
+      </div>
+      {team.length ? (
+        <div className="w-full mt-8 overflow-scroll">
           <h1 className="text-2xl font-bold text-neutral-100">
             {data?.name} created by
           </h1>
-          <div className="flex gap-4 overflow-auto scrollbar py-4">
+          {/* <div className="w-full flex gap-4 py-4">
             {team?.map((item, i) => (
               <CardBrowse
                 pathname="/creators"
-                classNames="min-w-[25%]"
+                classNames="w-[300px]"
                 key={i}
                 {...item}
               />
             ))}
-          </div>
+          </div> */}
         </div>
+      ) : (
+        ""
+      )}
+
+      {posts?.length ? (
         <div className="mt-8">
           <div className="flex gap-2 items-center">
             <h1 className="text-2xl font-bold text-neutral-100">
@@ -465,7 +468,9 @@ const Title = () => {
             ))}
           </div>
         </div>
-      </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

@@ -42,7 +42,7 @@ const CardGames = ({
             {parent_platforms
               ?.slice(
                 0,
-                parent_platforms.length > 6 ? 6 : parent_platforms.length
+                parent_platforms?.length > 6 ? 6 : parent_platforms?.length
               )
               .map((item, i) => (
                 <Image
@@ -75,9 +75,9 @@ const CardGames = ({
                   priority
                 />
               ))}
-            {parent_platforms.length > 6 ? (
+            {parent_platforms?.length > 6 ? (
               <span className="text-sm text-green-500">
-                +{parent_platforms.length - 6}
+                +{parent_platforms?.length - 6}
               </span>
             ) : (
               ""

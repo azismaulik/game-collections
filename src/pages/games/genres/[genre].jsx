@@ -19,38 +19,8 @@ const Genre = () => {
   const getGamesByGenre = async () => {
     try {
       setIsLoadingPage(true);
-      // Lakukan permintaan ke API RAWG untuk mendapatkan data genre
-      const genreMappingsResponse = await fetch(
-        `${apiUrl}/genres?key=${apiKey}`
-      );
-
-      if (!genreMappingsResponse.ok) {
-        throw new Error("Failed to fetch genre data");
-      }
-
-      const genreMappingsData = await genreMappingsResponse.json();
-
-      // Buat pemetaan otomatis genre ke ID
-      const genreMappings = genreMappingsData.results.reduce(
-        (acc, genreData) => {
-          acc[genreData.slug] = genreData.id;
-          return acc;
-        },
-        {}
-      );
-
-      // Dapatkan ID genre dari pemetaan
-      const genreId = genreMappings[genre];
-
-      if (!genreId) {
-        return {
-          notFound: true, // Tampilkan 404 jika genre tidak ditemukan
-        };
-      }
-
-      // Lakukan permintaan ke API RAWG untuk mendapatkan data game berdasarkan genre
       const gamesResponse = await fetch(
-        `${apiUrl}/games?key=${apiKey}&genres=${genreId}&page=${page}`
+        `${apiUrl}/games?key=${apiKey}&genres=${genre}&page=${page}`
       );
 
       if (!gamesResponse.ok) {
@@ -59,7 +29,7 @@ const Genre = () => {
 
       const gamesData = await gamesResponse.json();
       gamesData.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames([...games, ...gamesData.results]);
+      setGames(gamesData.results);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -69,7 +39,7 @@ const Genre = () => {
 
   React.useEffect(() => {
     getGamesByGenre();
-  }, [page]);
+  }, [page, genre]);
 
   return (
     <div>

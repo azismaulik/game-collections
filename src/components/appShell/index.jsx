@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
   return (
     <main className="flex w-full">
       <Sidebar />
-      <div className="flex-1 p-8">
+      <div className="flex-1 p-4">
         {!pathname.includes("/games/search") && <Header />}
         {children}
       </div>
