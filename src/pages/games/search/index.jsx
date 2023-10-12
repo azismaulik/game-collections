@@ -14,6 +14,8 @@ export default function Search() {
 
   const [query, setQuery] = React.useState("");
 
+  // PR: using useDebounce
+
   const getGames = async (e) => {
     try {
       e.preventDefault();
