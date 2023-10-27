@@ -25,16 +25,16 @@ const CardGames = ({
   return (
     <div className="flex-1 h-auto rounded-lg bg-neutral-900/70 relative hover:-translate-y-4 transition">
       <Link href={`/games/${slug}`}>
-        {background_image && (
+        {background_image ? (
           <Image
             src={background_image}
-            alt=""
+            alt={name}
             width={500}
             height={500}
             className="rounded-t-lg w-full h-[200px] object-cover"
             priority
           />
-        )}
+        ) : null}
       </Link>
       <div className="p-4 pb-6">
         <div className="flex justify-between my-2 items-center">

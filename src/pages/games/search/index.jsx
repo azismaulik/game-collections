@@ -1,31 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { apiKey, apiUrl } from "@/constants";
-import LoadMore from "@/components/LoadMore";
 
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 const CardGames = dynamic(() => import("@/components/CardGames"));
 
 export default function Search() {
+  const router = useRouter();
+
   const [games, setGames] = React.useState([]);
-  const [selected, setSelected] = React.useState("relevance");
   const [page, setPage] = React.useState(1);
   const [isLoadingPage, setIsLoadingPage] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
   const [query, setQuery] = React.useState("");
 
-  // PR: using useDebounce
-
   const getGames = async (e) => {
     try {
-      e.preventDefault();
       setIsLoadingPage(true);
       const response = await fetch(
-        `${apiUrl}/games?key=${apiKey}&page=${page}&search=${query}`
+        `${apiUrl}/games?key=${apiKey}&page=${page}&page_size=50&search=${router.query.search}`
       );
       const data = await response.json();
       data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames([...games, ...data.results]);
+      setGames(data.results);
     } catch (error) {
       console.error(error);
     } finally {
@@ -33,9 +31,23 @@ export default function Search() {
     }
   };
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    router.push({
+      pathname: router.pathname,
+      query: { search: query },
+    });
+  };
+
+  useEffect(() => {
+    if (router.isReady && router.query.search) {
+      getGames();
+    }
+  }, [router.isReady, router.query.search]);
+
   return (
     <div>
-      <form onSubmit={getGames}>
+      <form onSubmit={handleSearch}>
         <input
           type="text"
           value={query}
@@ -46,33 +58,10 @@ export default function Search() {
         />
       </form>
       <h1 className="text-6xl font-bold mb-12">Search Games</h1>
-      {/* <div className="flex justify-between mt-6">
-        <select
-          className="rounded bg-neutral-800 py-1 px-3 capitalize"
-          onChange={(e) => setSelected(e.target.value)}
-          value={selected}
-        >
-          {orderBy.map((item) => (
-            <option className="capitalize" key={item} value={item}>
-              {item} {item === selected && "🔥"}
-            </option>
-          ))}
-        </select>
-      </div> */}
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {games.map((item) => (
           <CardGames key={item.id} {...item} />
         ))}
-      </div>
-
-      <div className="flex justify-center my-10">
-        {isLoadingPage && <span className="loader"></span>}
-        {!isLastPage && !isLoadingPage && Object.keys(games).length ? (
-          <LoadMore setPage={() => setPage(page + 1)} />
-        ) : (
-          ""
-        )}
       </div>
     </div>
   );

@@ -16,9 +16,12 @@ const Platform = () => {
   const [isLoadingPage, setIsLoadingPage] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
+  const [prevPlatform, setPrevPlatform] = React.useState("");
+
   const getGamesByPlatform = async () => {
     try {
       setIsLoadingPage(true);
+      setPrevPlatform(platform);
       // Lakukan permintaan ke API RAWG untuk mendapatkan data platform
       const platformMappingsResponse = await fetch(
         `${apiUrl}/platforms?key=${apiKey}`
@@ -59,7 +62,11 @@ const Platform = () => {
 
       const gamesData = await gamesResponse.json();
       gamesData.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames([...games, ...gamesData.results]);
+      if (prevPlatform !== platform) {
+        setGames(gamesData.results);
+      } else {
+        setGames([...games, ...gamesData.results]);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {

@@ -16,9 +16,12 @@ const Genre = () => {
   const [isLoadingPage, setIsLoadingPage] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
+  const [prevGenre, setPrevGenre] = React.useState("");
+
   const getGamesByGenre = async () => {
     try {
       setIsLoadingPage(true);
+      setPrevGenre(genre);
       const gamesResponse = await fetch(
         `${apiUrl}/games?key=${apiKey}&genres=${genre}&page=${page}`
       );
@@ -29,7 +32,11 @@ const Genre = () => {
 
       const gamesData = await gamesResponse.json();
       gamesData.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames(gamesData.results);
+      if (prevGenre !== genre) {
+        setGames(gamesData.results);
+      } else {
+        setGames([...games, ...gamesData.results]);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
