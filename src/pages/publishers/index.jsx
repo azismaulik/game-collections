@@ -1,9 +1,9 @@
+import React from "react";
+import dynamic from "next/dynamic";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
-import { apiKey, apiUrl } from "@/constants";
-import React from "react";
+import { apiCall } from "@/services/api";
 
-import dynamic from "next/dynamic";
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Publishers = () => {
@@ -13,14 +13,19 @@ const Publishers = () => {
   const [isLastPage, setIsLastPage] = React.useState(false);
 
   const getPublishers = async () => {
-    setIsLoading(true);
-    const response = await fetch(
-      `${apiUrl}/publishers?key=${apiKey}&page=${page}`
-    );
-    const data = await response.json();
-    data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-    setPublishers([...publishers, ...data.results]);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const response = await apiCall({
+        base: "publishers",
+        resource: `page=${page}&page_size=20`,
+      });
+      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      setPublishers([...publishers, ...response.results]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   React.useEffect(() => {
@@ -42,10 +47,10 @@ const Publishers = () => {
         </div>
       )}
       <div className="flex justify-center my-10">
-        {isLoading && <span className="loader"></span>}
         {!isLastPage && !isLoading && (
           <LoadMore setPage={() => setPage(page + 1)} />
         )}
+        {isLoading && <span className="loader"></span>}
       </div>
     </div>
   );

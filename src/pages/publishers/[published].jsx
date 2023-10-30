@@ -1,10 +1,10 @@
+import React from "react";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
-import { apiKey, apiUrl } from "@/constants";
-import { useRouter } from "next/router";
-import React from "react";
+import { apiCall } from "@/services/api";
 
-import dynamic from "next/dynamic";
 const CardGames = dynamic(() => import("@/components/CardGames"));
 
 const Published = () => {
@@ -18,14 +18,14 @@ const Published = () => {
   const getGameByPublished = async () => {
     try {
       setIsLoadingPage(true);
-      const response = await fetch(
-        `${apiUrl}/games?key=${apiKey}&publishers=${published}&page=${page}`
-      );
-      const data = await response.json();
-      data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames([...games, ...data.results]);
+      const response = await apiCall({
+        base: "games",
+        resource: `page=${page}&page_size=20&publishers=${published}`,
+      });
+      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      setGames([...games, ...response.results]);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     } finally {
       setIsLoadingPage(false);
     }
@@ -33,7 +33,7 @@ const Published = () => {
 
   React.useEffect(() => {
     getGameByPublished();
-  }, [page]);
+  }, [page, published]);
 
   return (
     <div>
@@ -51,11 +51,10 @@ const Published = () => {
       )}
 
       <div className="flex justify-center my-10">
-        {!isLastPage && !isLoadingPage ? (
+        {!isLastPage && !isLoadingPage && (
           <LoadMore setPage={() => setPage(page + 1)} />
-        ) : (
-          <span className="loader"></span>
         )}
+        {isLoadingPage && <span className="loader"></span>}
       </div>
     </div>
   );

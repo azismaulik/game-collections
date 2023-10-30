@@ -1,9 +1,9 @@
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardCreator from "@/components/skeleton/SkeletonCardCreator";
-import { apiKey, apiUrl } from "@/constants";
 import React from "react";
 
 import dynamic from "next/dynamic";
+import { apiCall } from "@/services/api";
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Creators = () => {
@@ -12,19 +12,24 @@ const Creators = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
-  const getCreators = async () => {
-    setIsLoading(true);
-    const response = await fetch(
-      `${apiUrl}/creators?key=${apiKey}&page=${page}`
-    );
-    const data = await response.json();
-    data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-    setCreators([...creators, ...data.results]);
-    setIsLoading(false);
+  const fetchCreators = async () => {
+    try {
+      setIsLoading(true);
+      const res = await apiCall({
+        base: "creators",
+        resource: `page=${page}&page_size=20`,
+      });
+      res.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      setCreators([...creators, ...res.results]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   React.useEffect(() => {
-    getCreators();
+    fetchCreators();
   }, [page]);
 
   return (
@@ -42,10 +47,10 @@ const Creators = () => {
         </div>
       )}
       <div className="flex justify-center my-10">
-        {isLoading && <span className="loader"></span>}
         {!isLastPage && !isLoading && (
           <LoadMore setPage={() => setPage(page + 1)} />
         )}
+        {isLoading && <span className="loader"></span>}
       </div>
     </div>
   );

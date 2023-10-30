@@ -1,9 +1,8 @@
+import React from "react";
+import dynamic from "next/dynamic";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
-import { apiKey, apiUrl } from "@/constants";
-import React from "react";
-
-import dynamic from "next/dynamic";
+import { apiCall } from "@/services/api";
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Developers = () => {
@@ -13,14 +12,19 @@ const Developers = () => {
   const [isLastPage, setIsLastPage] = React.useState(false);
 
   const getDevelopers = async () => {
-    setIsLoading(true);
-    const response = await fetch(
-      `${apiUrl}/developers?key=${apiKey}&page=${page}`
-    );
-    const data = await response.json();
-    data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-    setDevelopers([...developers, ...data.results]);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const response = await apiCall({
+        base: "developers",
+        resource: `page=${page}&page_size=20`,
+      });
+      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      setDevelopers([...developers, ...response.results]);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   React.useEffect(() => {

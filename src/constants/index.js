@@ -1,6 +1,3 @@
-export const apiUrl = process.env.NEXT_PUBLIC_RAWG_API_URL;
-export const apiKey = process.env.NEXT_PUBLIC_RAWG_API_KEY;
-
 export const platforms = [
   {
     icon: "/platforms/pc.svg",

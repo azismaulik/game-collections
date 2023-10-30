@@ -1,9 +1,8 @@
+import React from "react";
+import dynamic from "next/dynamic";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
-import { apiKey, apiUrl } from "@/constants";
-import React from "react";
-
-import dynamic from "next/dynamic";
+import { apiCall } from "@/services/api";
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Tags = () => {
@@ -13,12 +12,19 @@ const Tags = () => {
   const [isLastPage, setIsLastPage] = React.useState(false);
 
   const getTags = async () => {
-    setIsLoading(true);
-    const response = await fetch(`${apiUrl}/tags?key=${apiKey}&page=${page}`);
-    const data = await response.json();
-    data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-    setTags([...tags, ...data.results]);
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const response = await apiCall({
+        base: "tags",
+        resource: `page=${page}&page_size=20`,
+      });
+      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      setTags([...tags, ...response.results]);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   React.useEffect(() => {

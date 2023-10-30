@@ -1,37 +1,31 @@
 import React from "react";
-import { apiKey, apiUrl } from "@/constants";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
 
 import dynamic from "next/dynamic";
+import { apiCall } from "@/services/api";
 const CardGames = dynamic(() => import("@/components/CardGames"));
 
 export default function Home() {
   const [games, setGames] = React.useState([]);
-  const [selected, setSelected] = React.useState("relevance");
   const [page, setPage] = React.useState(1);
   const [isLoadingPage, setIsLoadingPage] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
-  const getGames = async () => {
-    try {
-      setIsLoadingPage(true);
-      const response = await fetch(
-        `${apiUrl}/games?key=${apiKey}&page=${page}`
-      );
-      const data = await response.json();
-      data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames([...games, ...data.results]);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoadingPage(false);
-    }
+  const fetchGames = async () => {
+    setIsLoadingPage(true);
+    const res = await apiCall({
+      base: "games",
+      resource: `page=${page}&page_size=20`,
+    });
+    res.next === null ? setIsLastPage(true) : setIsLastPage(false);
+    setGames([...games, ...res.results]);
+    setIsLoadingPage(false);
   };
 
   React.useEffect(() => {
-    getGames();
-  }, [selected, page]);
+    fetchGames();
+  }, [page]);
 
   return (
     <div>

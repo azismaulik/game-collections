@@ -1,10 +1,10 @@
+import React from "react";
+import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
-import { apiKey, apiUrl } from "@/constants";
-import { useRouter } from "next/router";
-import React from "react";
+import { apiCall } from "@/services/api";
 
-import dynamic from "next/dynamic";
 const CardGames = dynamic(() => import("@/components/CardGames"));
 
 const Tag = () => {
@@ -18,12 +18,12 @@ const Tag = () => {
   const getGameByTag = async () => {
     try {
       setIsLoadingPage(true);
-      const response = await fetch(
-        `${apiUrl}/games?key=${apiKey}&tags=${tag}&page=${page}`
-      );
-      const data = await response.json();
-      data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames([...games, ...data.results]);
+      const response = await apiCall({
+        base: "games",
+        resource: `page=${page}&page_size=20&tags=${tag}`,
+      });
+      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      setGames([...games, ...response.results]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -33,7 +33,7 @@ const Tag = () => {
 
   React.useEffect(() => {
     getGameByTag();
-  }, [page]);
+  }, [page, tag]);
 
   return (
     <div>
@@ -51,11 +51,10 @@ const Tag = () => {
       )}
 
       <div className="flex justify-center my-10">
-        {!isLastPage && !isLoadingPage ? (
+        {!isLastPage && !isLoadingPage && (
           <LoadMore setPage={() => setPage(page + 1)} />
-        ) : (
-          <span className="loader"></span>
         )}
+        {isLoadingPage && <span className="loader"></span>}
       </div>
     </div>
   );

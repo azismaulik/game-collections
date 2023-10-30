@@ -9,7 +9,7 @@ const Sidebar = () => {
   const [isShown, setIsShown] = React.useState(false);
 
   return (
-    <nav className="hidden min-w-[250px] sticky max-h-screen overflow-auto top-0 bottom-0 lg:flex flex-col p-6">
+    <nav className="hidden min-w-[250px] sticky max-h-screen overflow-auto top-0 bottom-0 xl:flex flex-col p-6">
       <Link href="/" className="text-2xl font-bold">
         RAWR
       </Link>

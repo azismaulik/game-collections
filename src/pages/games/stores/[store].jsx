@@ -1,11 +1,13 @@
 import React from "react";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
-import { apiKey, apiUrl } from "@/constants";
 import { useRouter } from "next/router";
 
 import dynamic from "next/dynamic";
 const CardGames = dynamic(() => import("@/components/CardGames"));
+
+const apiUrl = process.env.NEXT_PUBLIC_RAWG_API_URL;
+const apiKey = process.env.NEXT_PUBLIC_RAWG_API_KEY;
 
 const Store = () => {
   const router = useRouter();
@@ -87,11 +89,10 @@ const Store = () => {
       )}
 
       <div className="flex justify-center my-10">
-        {!isLastPage && !isLoadingPage ? (
+        {!isLastPage && !isLoadingPage && (
           <LoadMore setPage={() => setPage(page + 1)} />
-        ) : (
-          <span className="loader"></span>
         )}
+        {isLoadingPage && <span className="loader"></span>}
       </div>
     </div>
   );

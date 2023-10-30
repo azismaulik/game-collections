@@ -12,6 +12,20 @@ const android = "/platforms/android.svg";
 const mac = "/platforms/mac.svg";
 const linux = "/platforms/linux.svg";
 const web = "/platforms/web.svg";
+const sega = "/platforms/sega.svg";
+
+const imagePlatforms = {
+  pc,
+  playstation,
+  xbox,
+  nintendo,
+  ios,
+  android,
+  mac,
+  linux,
+  web,
+  sega,
+};
 
 const CardGames = ({
   background_image,
@@ -45,35 +59,18 @@ const CardGames = ({
                 parent_platforms?.length > 6 ? 6 : parent_platforms?.length
               )
               .map((item, i) => (
-                <Image
-                  key={i}
-                  src={
-                    item.platform.slug === "pc"
-                      ? pc
-                      : item.platform.slug === "playstation"
-                      ? playstation
-                      : item.platform.slug === "xbox"
-                      ? xbox
-                      : item.platform.slug === "nintendo"
-                      ? nintendo
-                      : item.platform.slug === "ios"
-                      ? ios
-                      : item.platform.slug === "android"
-                      ? android
-                      : item.platform.slug === "mac"
-                      ? mac
-                      : item.platform.slug === "linux"
-                      ? linux
-                      : item.platform.slug === "web"
-                      ? web
-                      : ""
-                  }
-                  width={20}
-                  height={20}
-                  alt=""
-                  className="w-5 h-5"
-                  priority
-                />
+                <React.Fragment key={i}>
+                  {imagePlatforms[item.platform.slug] && (
+                    <Image
+                      src={imagePlatforms[item.platform.slug]}
+                      width={20}
+                      height={20}
+                      alt={item.platform.name}
+                      className="w-5 h-5"
+                      priority
+                    />
+                  )}
+                </React.Fragment>
               ))}
             {parent_platforms?.length > 6 ? (
               <span className="text-sm text-green-500">

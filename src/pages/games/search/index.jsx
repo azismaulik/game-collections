@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { apiKey, apiUrl } from "@/constants";
 
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import { apiCall } from "@/services/api";
+import LoadMore from "@/components/LoadMore";
 const CardGames = dynamic(() => import("@/components/CardGames"));
 
 export default function Search() {
@@ -15,17 +16,33 @@ export default function Search() {
 
   const [query, setQuery] = React.useState("");
 
-  const getGames = async (e) => {
+  // const getGames = async (e) => {
+  //   try {
+  //     setIsLoadingPage(true);
+  //     const response = await fetch(
+  //       `${apiUrl}/games?key=${apiKey}&page=${page}&page_size=50&search=${router.query.search}`
+  //     );
+  //     const data = await response.json();
+  //     data.next === null ? setIsLastPage(true) : setIsLastPage(false);
+  //     setGames(data.results);
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setIsLoadingPage(false);
+  //   }
+  // };
+
+  const getGames = async () => {
     try {
       setIsLoadingPage(true);
-      const response = await fetch(
-        `${apiUrl}/games?key=${apiKey}&page=${page}&page_size=50&search=${router.query.search}`
-      );
-      const data = await response.json();
-      data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames(data.results);
+      const response = await apiCall({
+        base: "games",
+        resource: `page=${page}&page_size=20&search=${router.query.search}`,
+      });
+      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      setGames([...games, ...response.results]);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     } finally {
       setIsLoadingPage(false);
     }
@@ -43,7 +60,7 @@ export default function Search() {
     if (router.isReady && router.query.search) {
       getGames();
     }
-  }, [router.isReady, router.query.search]);
+  }, [router.isReady, router.query.search, page]);
 
   return (
     <div>
@@ -62,6 +79,13 @@ export default function Search() {
         {games.map((item) => (
           <CardGames key={item.id} {...item} />
         ))}
+      </div>
+
+      <div className="flex justify-center my-10">
+        {isLoadingPage && <span className="loader"></span>}
+        {!isLastPage && !isLoadingPage && games.length && (
+          <LoadMore setPage={() => setPage(page + 1)} />
+        )}
       </div>
     </div>
   );

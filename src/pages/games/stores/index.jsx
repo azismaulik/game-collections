@@ -1,29 +1,27 @@
-import LoadMore from "@/components/LoadMore";
-import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
-import { apiKey, apiUrl } from "@/constants";
 import React from "react";
-
 import dynamic from "next/dynamic";
+import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
+import { apiCall } from "@/services/api";
+
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Stores = () => {
   const [stores, setStores] = React.useState([]);
-  const [page, setPage] = React.useState(1);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isLastPage, setIsLastPage] = React.useState(false);
 
   const getStores = async () => {
-    setIsLoading(true);
-    const response = await fetch(`${apiUrl}/stores?key=${apiKey}&page=${page}`);
-    const data = await response.json();
-    data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-    setStores([...stores, ...data.results]);
-    setIsLoading(false);
+    try {
+      const res = await apiCall({
+        base: "stores",
+      });
+      setStores(res.results);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   React.useEffect(() => {
     getStores();
-  }, [page]);
+  }, []);
 
   return (
     <div>
@@ -39,12 +37,6 @@ const Stores = () => {
           <SkeletonCardBrowse cards={12} />
         </div>
       )}
-      <div className="flex justify-center my-10">
-        {isLoading && <span className="loader"></span>}
-        {!isLastPage && !isLoading && (
-          <LoadMore setPage={() => setPage(page + 1)} />
-        )}
-      </div>
     </div>
   );
 };

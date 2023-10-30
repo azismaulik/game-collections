@@ -1,10 +1,10 @@
 import React from "react";
 import LoadMore from "@/components/LoadMore";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
-import { apiKey, apiUrl } from "@/constants";
 import { useRouter } from "next/router";
 
 import dynamic from "next/dynamic";
+import { apiCall } from "@/services/api";
 const CardGames = dynamic(() => import("@/components/CardGames"));
 
 const Genre = () => {
@@ -18,24 +18,19 @@ const Genre = () => {
 
   const [prevGenre, setPrevGenre] = React.useState("");
 
-  const getGamesByGenre = async () => {
+  const fetchGames = async () => {
     try {
       setIsLoadingPage(true);
       setPrevGenre(genre);
-      const gamesResponse = await fetch(
-        `${apiUrl}/games?key=${apiKey}&genres=${genre}&page=${page}`
-      );
-
-      if (!gamesResponse.ok) {
-        throw new Error("Failed to fetch game data");
-      }
-
-      const gamesData = await gamesResponse.json();
-      gamesData.next === null ? setIsLastPage(true) : setIsLastPage(false);
+      const res = await apiCall({
+        base: "games",
+        resource: `page=${page}&page_size=20&genres=${genre}`,
+      });
+      res.next === null ? setIsLastPage(true) : setIsLastPage(false);
       if (prevGenre !== genre) {
-        setGames(gamesData.results);
+        setGames(res.results);
       } else {
-        setGames([...games, ...gamesData.results]);
+        setGames([...games, ...res.results]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -45,7 +40,7 @@ const Genre = () => {
   };
 
   React.useEffect(() => {
-    getGamesByGenre();
+    fetchGames();
   }, [page, genre]);
 
   return (
@@ -64,11 +59,10 @@ const Genre = () => {
       )}
 
       <div className="flex justify-center my-10">
-        {!isLastPage && !isLoadingPage ? (
+        {!isLastPage && !isLoadingPage && (
           <LoadMore setPage={() => setPage(page + 1)} />
-        ) : (
-          <span className="loader"></span>
         )}
+        {isLoadingPage && <span className="loader"></span>}
       </div>
     </div>
   );

@@ -1,31 +1,27 @@
-import LoadMore from "@/components/LoadMore";
-import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
-import { apiKey, apiUrl } from "@/constants";
 import React from "react";
-
+import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
 import dynamic from "next/dynamic";
+import { apiCall } from "@/services/api";
+
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Platforms = () => {
   const [platforms, setPlatforms] = React.useState([]);
-  const [page, setPage] = React.useState(1);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isLastPage, setIsLastPage] = React.useState(false);
 
-  const getPlatforms = async () => {
-    setIsLoading(true);
-    const response = await fetch(
-      `${apiUrl}/platforms?key=${apiKey}&page=${page}`
-    );
-    const data = await response.json();
-    data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-    setPlatforms([...platforms, ...data.results]);
-    setIsLoading(false);
+  const fetchPlatforms = async () => {
+    try {
+      const res = await apiCall({
+        base: "platforms",
+      });
+      setPlatforms(res.results);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   React.useEffect(() => {
-    getPlatforms();
-  }, [page]);
+    fetchPlatforms();
+  }, []);
 
   return (
     <div>
@@ -41,12 +37,6 @@ const Platforms = () => {
           <SkeletonCardBrowse cards={12} />
         </div>
       )}
-      <div className="flex justify-center my-10">
-        {isLoading && <span className="loader"></span>}
-        {!isLastPage && !isLoading && (
-          <LoadMore setPage={() => setPage(page + 1)} />
-        )}
-      </div>
     </div>
   );
 };

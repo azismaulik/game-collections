@@ -1,29 +1,26 @@
-import LoadMore from "@/components/LoadMore";
-import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
-import { apiKey, apiUrl } from "@/constants";
 import React from "react";
-
+import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
 import dynamic from "next/dynamic";
+import { apiCall } from "@/services/api";
+
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Genres = () => {
   const [genres, setGenres] = React.useState([]);
-  const [page, setPage] = React.useState(1);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [isLastPage, setIsLastPage] = React.useState(false);
-
-  const getGenres = async () => {
-    setIsLoading(true);
-    const response = await fetch(`${apiUrl}/genres?key=${apiKey}&page=${page}`);
-    const data = await response.json();
-    data.next === null ? setIsLastPage(true) : setIsLastPage(false);
-    setGenres([...genres, ...data.results]);
-    setIsLoading(false);
+  const fetchGenres = async () => {
+    try {
+      const res = await apiCall({
+        base: "genres",
+      });
+      setGenres(res.results);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   React.useEffect(() => {
-    getGenres();
-  }, [page]);
+    fetchGenres();
+  }, []);
 
   return (
     <div>
@@ -39,12 +36,6 @@ const Genres = () => {
           <SkeletonCardBrowse cards={12} />
         </div>
       )}
-      <div className="flex justify-center my-10">
-        {isLoading && <span className="loader"></span>}
-        {!isLastPage && !isLoading && (
-          <LoadMore setPage={() => setPage(page + 1)} />
-        )}
-      </div>
     </div>
   );
 };
