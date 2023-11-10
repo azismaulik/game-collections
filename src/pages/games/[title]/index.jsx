@@ -118,7 +118,13 @@ const Title = () => {
             <h1 className="text-2xl font-bold text-neutral-100">
               {data?.name} posts{" "}
             </h1>
-            <Image src="/reddit.png" alt="" width={50} height={50} />
+            <Image
+              src="/reddit.png"
+              alt=""
+              width={50}
+              height={50}
+              className="w-auto h-auto"
+            />
           </div>
           <div className="grid grid-cols-3 gap-4 py-4">
             {posts?.slice(0, 6).map((item, i) => (
@@ -132,7 +138,7 @@ const Title = () => {
                 </Link>
                 <p className="text-sm text-neutral-500 font-semibold mt-2">
                   {formatDate(item.created)} by{" "}
-                  {item.username.replace("/u/", "")}
+                  {item.username?.replace("/u/", "")}
                 </p>
               </div>
             ))}

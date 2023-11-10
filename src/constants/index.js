@@ -1,3 +1,27 @@
+const pc = "/platforms/pc.svg";
+const playstation = "/platforms/playstation.svg";
+const xbox = "/platforms/xbox.svg";
+const nintendo = "/platforms/nintendo.svg";
+const ios = "/platforms/ios.svg";
+const android = "/platforms/android.svg";
+const mac = "/platforms/mac.svg";
+const linux = "/platforms/linux.svg";
+const web = "/platforms/web.svg";
+const sega = "/platforms/sega.svg";
+
+export const imagePlatforms = {
+  pc,
+  playstation,
+  xbox,
+  nintendo,
+  ios,
+  android,
+  mac,
+  linux,
+  web,
+  sega,
+};
+
 export const platforms = [
   {
     icon: "/platforms/pc.svg",

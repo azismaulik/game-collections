@@ -1,9 +1,9 @@
 import React from "react";
-import { apiKey, apiUrl } from "@/constants";
 import TitleBrowse from "@/components/TitleBrowse";
 import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
 
 import dynamic from "next/dynamic";
+import { apiCall } from "@/services/api";
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Browse = () => {
@@ -24,52 +24,59 @@ const Browse = () => {
   const [lengthStores, setLengthStores] = React.useState(0);
 
   const getPlatforms = async () => {
-    const response = await fetch(`${apiUrl}/platforms?key=${apiKey}`);
-    const data = await response.json();
-    setLengthPlatforms(data.count);
-    setPlatforms(data.results);
+    const response = await apiCall({
+      base: "platforms",
+    });
+    setLengthPlatforms(response.count);
+    setPlatforms(response.results);
   };
 
   const getGenres = async () => {
-    const response = await fetch(`${apiUrl}/genres?key=${apiKey}`);
-    const data = await response.json();
-    setLengthGenres(data.count);
-    setGenres(data.results);
+    const response = await apiCall({
+      base: "genres",
+    });
+    setLengthGenres(response.count);
+    setGenres(response.results);
   };
 
   const getTags = async () => {
-    const response = await fetch(`${apiUrl}/tags?key=${apiKey}`);
-    const data = await response.json();
-    setLengthTags(data.count);
-    setTags(data.results);
+    const response = await apiCall({
+      base: "tags",
+    });
+    setLengthTags(response.count);
+    setTags(response.results);
   };
 
   const getCreators = async () => {
-    const response = await fetch(`${apiUrl}/creators?key=${apiKey}`);
-    const data = await response.json();
-    setLengthCreators(data.count);
-    setCreators(data.results);
+    const response = await apiCall({
+      base: "creators",
+    });
+    setLengthCreators(response.count);
+    setCreators(response.results);
   };
 
   const getDevelopers = async () => {
-    const response = await fetch(`${apiUrl}/developers?key=${apiKey}`);
-    const data = await response.json();
-    setLengthDevelopers(data.count);
-    setDevelopers(data.results);
+    const response = await apiCall({
+      base: "developers",
+    });
+    setLengthDevelopers(response.count);
+    setDevelopers(response.results);
   };
 
   const getPublishers = async () => {
-    const response = await fetch(`${apiUrl}/publishers?key=${apiKey}`);
-    const data = await response.json();
-    setLengthPublishers(data.count);
-    setPublishers(data.results);
+    const response = await apiCall({
+      base: "publishers",
+    });
+    setLengthPublishers(response.count);
+    setPublishers(response.results);
   };
 
   const getStores = async () => {
-    const response = await fetch(`${apiUrl}/stores?key=${apiKey}`);
-    const data = await response.json();
-    setLengthStores(data.count);
-    setStores(data.results);
+    const response = await apiCall({
+      base: "stores",
+    });
+    setLengthStores(response.count);
+    setStores(response.results);
   };
 
   React.useEffect(() => {

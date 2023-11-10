@@ -1,31 +1,8 @@
+import { imagePlatforms } from "@/constants";
 import { formatDate } from "@/utils/formatDate";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-
-const pc = "/platforms/pc.svg";
-const playstation = "/platforms/playstation.svg";
-const xbox = "/platforms/xbox.svg";
-const nintendo = "/platforms/nintendo.svg";
-const ios = "/platforms/ios.svg";
-const android = "/platforms/android.svg";
-const mac = "/platforms/mac.svg";
-const linux = "/platforms/linux.svg";
-const web = "/platforms/web.svg";
-const sega = "/platforms/sega.svg";
-
-const imagePlatforms = {
-  pc,
-  playstation,
-  xbox,
-  nintendo,
-  ios,
-  android,
-  mac,
-  linux,
-  web,
-  sega,
-};
 
 const CardGames = ({
   background_image,
@@ -43,9 +20,9 @@ const CardGames = ({
           <Image
             src={background_image}
             alt={name}
-            width={500}
+            width={800}
             height={500}
-            className="rounded-t-lg w-full h-[200px] object-cover"
+            className="rounded-t-lg w-full min-h-[200px] object-cover"
             priority
           />
         ) : null}
