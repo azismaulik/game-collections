@@ -4,22 +4,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import {
-  Additions,
-  Developers,
-  Genres,
-  Header,
-  Metacritic,
-  OtherGames,
-  Platforms,
-  Publishers,
-  ReleaseDate,
-  Tags,
-  Foto,
-  Video,
-  WhereToBuy,
-} from "./components";
 import TeamDevelopment from "./components/TeamDevelopment";
+import Header from "./components/Header";
+import OtherGames from "./components/OtherGames";
+import Additions from "./components/Additions";
+import Video from "./components/Video";
+import Foto from "./components/Foto";
+import WhereToBuy from "./components/WhereToBuy";
+import Platforms from "./components/Platforms";
+import Metacritic from "./components/Metacritic";
+import Genres from "./components/Genres";
+import ReleaseDate from "./components/ReleaseDate";
+import Developers from "./components/Developers";
+import Publishers from "./components/Publishers";
 
 const Title = () => {
   const router = useRouter();
