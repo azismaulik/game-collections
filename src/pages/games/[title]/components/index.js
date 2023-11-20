@@ -12,7 +12,7 @@ import ReleaseDate from "./ReleaseDate";
 import Tags from "./Tags";
 import WhereToBuy from "./WhereToBuy";
 
-export {
+export default {
   Additions,
   Developers,
   Foto,
