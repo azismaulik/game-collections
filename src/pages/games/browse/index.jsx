@@ -91,7 +91,7 @@ const Browse = () => {
 
   return (
     <div>
-      <h1 className="text-6xl font-bold">Browse</h1>
+      <h1 className="text-4xl md:text-6xl font-bold mb-6 md:mb-12">Browse</h1>
       <TitleBrowse
         href="/games/platforms"
         title="Platforms"

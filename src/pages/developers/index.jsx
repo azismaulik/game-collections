@@ -1,13 +1,19 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import LoadMore from "@/components/LoadMore";
 import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
 import { apiCall } from "@/services/api";
+import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
+import Pagination from "@/components/Pagination";
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Developers = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+
   const [developers, setDevelopers] = React.useState([]);
-  const [page, setPage] = React.useState(1);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
@@ -16,10 +22,10 @@ const Developers = () => {
       setIsLoading(true);
       const response = await apiCall({
         base: "developers",
-        resource: `page=${page}&page_size=20`,
+        resource: `page=${currentPage}&page_size=20`,
       });
-      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setDevelopers([...developers, ...response.results]);
+      setIsLastPage(response.next === null);
+      setDevelopers(response.results);
     } catch (error) {
       console.log(error);
     } finally {
@@ -27,13 +33,22 @@ const Developers = () => {
     }
   };
 
+  const handleChangePage = (newPage) => {
+    router.push({
+      pathname: router.pathname,
+      query: { page: newPage },
+    });
+  };
+
   React.useEffect(() => {
     getDevelopers();
-  }, [page]);
+  }, [currentPage]);
 
   return (
     <div>
-      <h1 className="text-6xl font-bold mb-10">Developers</h1>
+      <h1 className="text-4xl md:text-6xl font-bold mb-6 md:mb-12">
+        Developers
+      </h1>
       {developers.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {developers.map((item) => (
@@ -48,7 +63,11 @@ const Developers = () => {
       <div className="flex justify-center my-10">
         {isLoading && <span className="loader"></span>}
         {!isLastPage && !isLoading && (
-          <LoadMore setPage={() => setPage(page + 1)} />
+          <Pagination
+            currentPage={currentPage}
+            handleNextPage={() => handleChangePage(currentPage + 1)}
+            handlePrevPage={() => handleChangePage(currentPage - 1)}
+          />
         )}
       </div>
     </div>

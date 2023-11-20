@@ -36,7 +36,7 @@ const Header = ({ data }) => {
           </p>
         )}
       </div>
-      <h1 className="text-4xl md:text-6xl font-bold">{data?.name}</h1>
+      <h1 className="text-4xl md:text-6xl font-bold">{data?.name || ""}</h1>
     </>
   );
 };

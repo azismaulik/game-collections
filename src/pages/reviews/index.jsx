@@ -1,13 +1,19 @@
 import CardReviews from "@/components/CardReviews";
-import LoadMore from "@/components/LoadMore";
+import Pagination from "@/components/Pagination";
 import Grid from "@/components/displayOptions/Grid";
 import Single from "@/components/displayOptions/Single";
 import { apiCall } from "@/services/api";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import React from "react";
 
 const Reviews = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+
   const [reviews, setReviews] = React.useState([]);
-  const [page, setPage] = React.useState(1);
   const [isLoadingPage, setIsLoadingPage] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
@@ -17,10 +23,10 @@ const Reviews = () => {
       setIsLoadingPage(true);
       const response = await apiCall({
         base: "reviews",
-        resource: `page=${page}&page_size=20`,
+        resource: `page=${currentPage}&page_size=20`,
       });
-      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setReviews([...reviews, ...response.results]);
+      setIsLastPage(response.next === null);
+      setReviews(response.results);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -28,14 +34,23 @@ const Reviews = () => {
     }
   };
 
+  const handleChangePage = (newPage) => {
+    router.push({
+      pathname: router.pathname,
+      query: { page: newPage },
+    });
+  };
+
   React.useEffect(() => {
     fetchReviews();
-  }, [page]);
+  }, [currentPage]);
 
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="text-6xl font-bold mb-12">Reviews</h1>
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 md:mb-12">
+          Reviews
+        </h1>
         <div className="hidden xl:flex gap-2 items-center">
           <p>Display options: </p>
           <Grid
@@ -62,7 +77,11 @@ const Reviews = () => {
 
       <div className="flex justify-center my-10">
         {!isLastPage && !isLoadingPage && (
-          <LoadMore setPage={() => setPage(page + 1)} />
+          <Pagination
+            currentPage={currentPage}
+            handleNextPage={() => handleChangePage(currentPage + 1)}
+            handlePrevPage={() => handleChangePage(currentPage - 1)}
+          />
         )}
         {isLoadingPage && <span className="loader"></span>}
       </div>

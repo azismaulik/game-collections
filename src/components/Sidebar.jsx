@@ -29,12 +29,13 @@ const Sidebar = () => {
   );
 };
 
-const Browse = () => {
+export const Browse = ({ clicked }) => {
   const { pathname } = useRouter();
   const [isShown, setIsShown] = useState(false);
   return (
     <>
       <Link
+        onClick={clicked}
         href="/games/browse"
         className="text-xl font-bold text-neutral-100 hover:text-neutral-400 transition mt-4"
       >
@@ -42,6 +43,7 @@ const Browse = () => {
       </Link>
       {browse?.slice(0, isShown ? browse.length : 3).map((item) => (
         <Link
+          onClick={clicked}
           href={`${item.slug}`}
           className="mt-2 font-semibold flex gap-2 items-center group"
           key={item.slug}
@@ -96,16 +98,21 @@ const Browse = () => {
   );
 };
 
-const Platforms = () => {
+export const Platforms = ({ clicked }) => {
   const { pathname } = useRouter();
   const [isShown, setIsShown] = useState(false);
   return (
     <>
-      <Link href="/games/platforms" className="text-xl font-bold mt-4">
+      <Link
+        onClick={clicked}
+        href="/games/platforms"
+        className="text-xl font-bold mt-4"
+      >
         Platforms
       </Link>
       {platforms.slice(0, isShown ? platforms.length : 3).map((item) => (
         <Link
+          onClick={clicked}
           href={`/games/platforms/${item.slug}`}
           className="mt-2 font-semibold flex gap-2 items-center group"
           key={item.slug}
@@ -160,18 +167,23 @@ const Platforms = () => {
   );
 };
 
-const Genre = () => {
+export const Genre = ({ clicked }) => {
   const { pathname } = useRouter();
   const [isShown, setIsShown] = useState(false);
   return (
     <>
-      <Link href="/games/genres" className="text-xl font-bold mt-4">
+      <Link
+        onClick={clicked}
+        href="/games/genres"
+        className="text-xl font-bold mt-4"
+      >
         Genres
       </Link>
       <ul>
         {genres.slice(0, isShown ? genres.length : 3).map((item) => (
           <li key={item.slug}>
             <Link
+              onClick={clicked}
               href={`/games/genres/${item.slug}`}
               className="mt-2 flex gap-2 items-center font-semibold group"
             >

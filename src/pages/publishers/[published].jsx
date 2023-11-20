@@ -1,19 +1,23 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import LoadMore from "@/components/LoadMore";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
 import { apiCall } from "@/services/api";
 import Grid from "@/components/displayOptions/Grid";
 import Single from "@/components/displayOptions/Single";
+import { useSearchParams } from "next/navigation";
+import Pagination from "@/components/Pagination";
 
 const CardGames = dynamic(() => import("@/components/CardGames"));
 
 const Published = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+
   const { published } = router.query;
   const [games, setGames] = React.useState([]);
-  const [page, setPage] = React.useState(1);
   const [isLoadingPage, setIsLoadingPage] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
@@ -24,10 +28,10 @@ const Published = () => {
       setIsLoadingPage(true);
       const response = await apiCall({
         base: "games",
-        resource: `page=${page}&page_size=20&publishers=${published}`,
+        resource: `page=${currentPage}&page_size=20&publishers=${published}`,
       });
       response.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames([...games, ...response.results]);
+      setGames(response.results);
     } catch (error) {
       console.log(error);
     } finally {
@@ -35,14 +39,21 @@ const Published = () => {
     }
   };
 
+  const handleChangePage = (newPage) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: newPage },
+    });
+  };
+
   React.useEffect(() => {
     getGameByPublished();
-  }, [page, published]);
+  }, [currentPage, published]);
 
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="text-6xl font-bold mb-12">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 md:mb-12">
           Games on {published?.replace("-", " ")}
         </h1>
         <div className="hidden xl:flex gap-2 items-center">
@@ -83,7 +94,11 @@ const Published = () => {
 
       <div className="flex justify-center my-10">
         {!isLastPage && !isLoadingPage && (
-          <LoadMore setPage={() => setPage(page + 1)} />
+          <Pagination
+            currentPage={currentPage}
+            handleNextPage={() => handleChangePage(currentPage + 1)}
+            handlePrevPage={() => handleChangePage(currentPage - 1)}
+          />
         )}
         {isLoadingPage && <span className="loader"></span>}
       </div>

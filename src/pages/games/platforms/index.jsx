@@ -25,7 +25,9 @@ const Platforms = () => {
 
   return (
     <div>
-      <h1 className="text-6xl font-bold mb-10">Platforms</h1>
+      <h1 className="text-4xl md:text-6xl font-bold mb-6 md:mb-12">
+        Platforms
+      </h1>
       {platforms.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {platforms.map((item) => (

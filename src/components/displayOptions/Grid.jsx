@@ -7,7 +7,7 @@ const Grid = ({ isSelected, onSelect }) => {
       onClick={onSelect}
       className={`${
         selected ? "opacity-100 bg-neutral-700" : "opacity-80 bg-neutral-800"
-      } group w-[80px] h-[65px] rounded-sm p-2 grid grid-cols-3 xl:grid-cols-4 gap-1 place-items-center hover:opacity-100 cursor-pointer`}
+      } group w-[80px] h-[65px] rounded-sm p-2 grid grid-cols-3 xl:grid-cols-4 gap-1 place-items-center hover:opacity-100 cursor-pointer transition-opacity`}
     >
       <div className="w-full h-5 border border-neutral-400"></div>
       <div className="w-full h-5 border border-neutral-400"></div>

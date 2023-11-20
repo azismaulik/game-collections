@@ -1,14 +1,20 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import LoadMore from "@/components/LoadMore";
 import SkeletonCardBrowse from "@/components/skeleton/SkeletonCardBrowse";
 import { apiCall } from "@/services/api";
+import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
+import Pagination from "@/components/Pagination";
 
 const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Publishers = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+
   const [publishers, setPublishers] = React.useState([]);
-  const [page, setPage] = React.useState(1);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
@@ -17,10 +23,10 @@ const Publishers = () => {
       setIsLoading(true);
       const response = await apiCall({
         base: "publishers",
-        resource: `page=${page}&page_size=20`,
+        resource: `page=${currentPage}&page_size=20`,
       });
-      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setPublishers([...publishers, ...response.results]);
+      setIsLastPage(response.next === null);
+      setPublishers(response.results);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -28,13 +34,22 @@ const Publishers = () => {
     }
   };
 
+  const handleChangePage = (newPage) => {
+    router.push({
+      pathname: router.pathname,
+      query: { page: newPage },
+    });
+  };
+
   React.useEffect(() => {
     getPublishers();
-  }, [page]);
+  }, [currentPage]);
 
   return (
     <div>
-      <h1 className="text-6xl font-bold mb-10">Publishers</h1>
+      <h1 className="text-4xl md:text-6xl font-bold mb-6 md:mb-12">
+        Publishers
+      </h1>
       {publishers.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {publishers.map((item) => (
@@ -48,7 +63,11 @@ const Publishers = () => {
       )}
       <div className="flex justify-center my-10">
         {!isLastPage && !isLoading && (
-          <LoadMore setPage={() => setPage(page + 1)} />
+          <Pagination
+            currentPage={currentPage}
+            handleNextPage={() => handleChangePage(currentPage + 1)}
+            handlePrevPage={() => handleChangePage(currentPage - 1)}
+          />
         )}
         {isLoading && <span className="loader"></span>}
       </div>

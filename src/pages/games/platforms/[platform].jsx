@@ -1,7 +1,8 @@
 import React from "react";
-import LoadMore from "@/components/LoadMore";
-import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
 import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
+import Pagination from "@/components/Pagination";
+import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
 import dynamic from "next/dynamic";
 import Grid from "@/components/displayOptions/Grid";
 import Single from "@/components/displayOptions/Single";
@@ -13,22 +14,20 @@ const apiKey = process.env.NEXT_PUBLIC_RAWG_API_KEY;
 
 const Platform = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { platform } = router.query;
 
-  const [page, setPage] = React.useState(1);
+  const currenPage = Number(searchParams.get("page")) || 1;
+
   const [games, setGames] = React.useState([]);
   const [isLoadingPage, setIsLoadingPage] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
-
-  const [prevPlatform, setPrevPlatform] = React.useState("");
 
   const [display, setDisplay] = React.useState("grid");
 
   const getGamesByPlatform = async () => {
     try {
       setIsLoadingPage(true);
-      setPrevPlatform(platform);
-      // Lakukan permintaan ke API RAWG untuk mendapatkan data platform
       const platformMappingsResponse = await fetch(
         `${apiUrl}/platforms?key=${apiKey}`
       );
@@ -59,7 +58,7 @@ const Platform = () => {
 
       // Lakukan permintaan ke API RAWG untuk mendapatkan data game berdasarkan platform
       const gamesResponse = await fetch(
-        `${apiUrl}/games?key=${apiKey}&platforms=${platformId}&page=${page}`
+        `${apiUrl}/games?key=${apiKey}&platforms=${platformId}&page=${currenPage}`
       );
 
       if (!gamesResponse.ok) {
@@ -67,12 +66,8 @@ const Platform = () => {
       }
 
       const gamesData = await gamesResponse.json();
-      gamesData.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      if (prevPlatform !== platform) {
-        setGames(gamesData.results);
-      } else {
-        setGames([...games, ...gamesData.results]);
-      }
+      setIsLastPage(gamesData.next === null);
+      setGames(gamesData.results);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -80,14 +75,21 @@ const Platform = () => {
     }
   };
 
+  const handleChangePage = (newPage) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: newPage },
+    });
+  };
+
   React.useEffect(() => {
     getGamesByPlatform();
-  }, [page, platform]);
+  }, [currenPage, platform]);
 
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="text-6xl font-bold mb-12">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 md:mb-12">
           Games on {platform?.replace("-", " ")}
         </h1>
         <div className="hidden xl:flex gap-2 items-center">
@@ -128,7 +130,11 @@ const Platform = () => {
 
       <div className="flex justify-center my-10">
         {!isLastPage && !isLoadingPage && (
-          <LoadMore setPage={() => setPage(page + 1)} />
+          <Pagination
+            currentPage={currenPage}
+            handlePrevPage={() => handleChangePage(currenPage - 1)}
+            handleNextPage={() => handleChangePage(currenPage + 1)}
+          />
         )}
         {isLoadingPage && <span className="loader"></span>}
       </div>

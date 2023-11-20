@@ -6,6 +6,24 @@ import ScrollToTop from "../ScrollToTop";
 
 const Layout = ({ children }) => {
   const { pathname } = useRouter();
+  const [scrolled, setScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <main className="flex w-full">
       <Sidebar />
@@ -13,7 +31,7 @@ const Layout = ({ children }) => {
         {!pathname.includes("/games/search") && <Header />}
         {children}
       </div>
-      <ScrollToTop />
+      {scrolled && <ScrollToTop />}
     </main>
   );
 };

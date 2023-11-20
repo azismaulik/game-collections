@@ -88,7 +88,7 @@ const CardGames = ({
                   <Link
                     key={i}
                     href={`/genres/${item.slug}`}
-                    className="text-xs underline hover:text-neutral-400 transition"
+                    className="text-xs border-bottom hover:text-neutral-400 transition"
                   >
                     {item.name}
                     {i === genres.length - 1 ? "" : ", "}

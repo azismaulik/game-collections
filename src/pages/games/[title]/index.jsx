@@ -1,4 +1,3 @@
-import CardBrowse from "@/components/CardBrowse";
 import { apiCall } from "@/services/api";
 import { formatDate } from "@/utils/formatDate";
 import Image from "next/image";
@@ -28,8 +27,6 @@ const Title = () => {
 
   const [data, setData] = React.useState({});
   const [show, setShow] = React.useState(false);
-  const [show2, setShow2] = React.useState(false);
-  const [team, setTeam] = React.useState([]);
   const [posts, setPosts] = React.useState([]);
 
   const getDetailGame = async () => {

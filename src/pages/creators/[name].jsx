@@ -2,18 +2,22 @@ import React from "react";
 import { useRouter } from "next/router";
 
 import CardGames from "@/components/CardGames";
-import LoadMore from "@/components/LoadMore";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
 import { apiCall } from "@/services/api";
 import Grid from "@/components/displayOptions/Grid";
 import Single from "@/components/displayOptions/Single";
+import { useSearchParams } from "next/navigation";
+import Pagination from "@/components/Pagination";
 
 const NameCreator = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { name } = router.query;
 
   const [games, setGames] = React.useState([]);
-  const [page, setPage] = React.useState(1);
+
+  const currentPage = Number(searchParams.get("page")) || 1;
+
   const [isLoadingPage, setIsLoadingPage] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
@@ -24,10 +28,10 @@ const NameCreator = () => {
       setIsLoadingPage(true);
       const response = await apiCall({
         base: "games",
-        resource: `page=${page}&page_size=20&creators=${name}`,
+        resource: `page=${currentPage}&page_size=20&creators=${name}`,
       });
-      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames([...games, ...response.results]);
+      setIsLastPage(response.next === null);
+      setGames(response.results);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -35,14 +39,23 @@ const NameCreator = () => {
     }
   };
 
+  const handleChangePage = (newPage) => {
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, page: newPage },
+    });
+  };
+
   React.useEffect(() => {
     fetchGames();
-  }, [page, name]);
+  }, [currentPage, name]);
 
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="text-6xl font-bold mb-12">{name?.replace("-", " ")}</h1>
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 md:mb-12">
+          {name?.replace("-", " ")}
+        </h1>
         <div className="hidden xl:flex gap-2 items-center">
           <p>Display options: </p>
           <Grid
@@ -81,7 +94,11 @@ const NameCreator = () => {
 
       <div className="flex justify-center my-10">
         {!isLastPage && !isLoadingPage && (
-          <LoadMore setPage={() => setPage(page + 1)} />
+          <Pagination
+            currentPage={currentPage}
+            handleNextPage={() => handleChangePage(currentPage + 1)}
+            handlePrevPage={() => handleChangePage(currentPage - 1)}
+          />
         )}
         {isLoadingPage && <span className="loader"></span>}
       </div>

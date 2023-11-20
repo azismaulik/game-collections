@@ -1,5 +1,4 @@
 import React from "react";
-import LoadMore from "@/components/LoadMore";
 import SkeletonCardGames from "@/components/skeleton/SkeletonCardGames";
 import { useRouter } from "next/router";
 
@@ -7,34 +6,31 @@ import dynamic from "next/dynamic";
 import { apiCall } from "@/services/api";
 import Grid from "@/components/displayOptions/Grid";
 import Single from "@/components/displayOptions/Single";
+import { useSearchParams } from "next/navigation";
+import Pagination from "@/components/Pagination";
 const CardGames = dynamic(() => import("@/components/CardGames"));
 
 const Genre = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { genre } = router.query;
 
-  const [page, setPage] = React.useState(1);
+  const currenPage = Number(searchParams.get("page")) || 1;
   const [games, setGames] = React.useState([]);
   const [isLoadingPage, setIsLoadingPage] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
-  const [prevGenre, setPrevGenre] = React.useState("");
   const [display, setDisplay] = React.useState("grid");
 
   const fetchGames = async () => {
     try {
       setIsLoadingPage(true);
-      setPrevGenre(genre);
       const res = await apiCall({
         base: "games",
-        resource: `page=${page}&page_size=20&genres=${genre}`,
+        resource: `page=${currenPage}&page_size=20&genres=${genre}`,
       });
-      res.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      if (prevGenre !== genre) {
-        setGames(res.results);
-      } else {
-        setGames([...games, ...res.results]);
-      }
+      setIsLastPage(res.next === null);
+      setGames(res.results);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -42,14 +38,21 @@ const Genre = () => {
     }
   };
 
+  const handleChangePage = (newPage) => {
+    router.push({
+      pathname: router.pathname,
+      query: { genre: genre, page: newPage },
+    });
+  };
+
   React.useEffect(() => {
     fetchGames();
-  }, [page, genre]);
+  }, [currenPage, genre]);
 
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="text-6xl font-bold mb-12">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 md:mb-12">
           Games on {genre?.replace("-", " ")}
         </h1>
         <div className="hidden xl:flex gap-2 items-center">
@@ -90,7 +93,11 @@ const Genre = () => {
 
       <div className="flex justify-center my-10">
         {!isLastPage && !isLoadingPage && (
-          <LoadMore setPage={() => setPage(page + 1)} />
+          <Pagination
+            handleNextPage={() => handleChangePage(currenPage + 1)}
+            handlePrevPage={() => handleChangePage(currenPage - 1)}
+            currentPage={currenPage}
+          />
         )}
         {isLoadingPage && <span className="loader"></span>}
       </div>
