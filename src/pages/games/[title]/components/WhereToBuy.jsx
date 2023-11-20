@@ -10,29 +10,28 @@ const WhereToBuy = () => {
   const [stores, setStores] = React.useState([]);
   const [buy, setBuy] = React.useState([]);
 
-  const getStoreBuy = async () => {
-    try {
-      const response = await apiCall({
-        base: `games/${title}/stores`,
-      });
-      setBuy(response.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getStores = async () => {
-    try {
-      const response = await apiCall({
-        base: `stores`,
-      });
-      setStores(response.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   React.useEffect(() => {
+    const getStoreBuy = async () => {
+      try {
+        const response = await apiCall({
+          base: `games/${title}/stores`,
+        });
+        setBuy(response.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getStores = async () => {
+      try {
+        const response = await apiCall({
+          base: `stores`,
+        });
+        setStores(response.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     getStoreBuy();
     getStores();
   }, [title]);

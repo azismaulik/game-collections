@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import CardGames from "@/components/CardGames";
@@ -14,30 +14,14 @@ const NameCreator = () => {
   const searchParams = useSearchParams();
   const { name } = router.query;
 
-  const [games, setGames] = React.useState([]);
+  const [games, setGames] = useState([]);
 
   const currentPage = Number(searchParams.get("page")) || 1;
 
-  const [isLoadingPage, setIsLoadingPage] = React.useState(false);
-  const [isLastPage, setIsLastPage] = React.useState(false);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
+  const [isLastPage, setIsLastPage] = useState(false);
 
-  const [display, setDisplay] = React.useState("grid");
-
-  const fetchGames = async () => {
-    try {
-      setIsLoadingPage(true);
-      const response = await apiCall({
-        base: "games",
-        resource: `page=${currentPage}&page_size=20&creators=${name}`,
-      });
-      setIsLastPage(response.next === null);
-      setGames(response.results);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  };
+  const [display, setDisplay] = useState("grid");
 
   const handleChangePage = (newPage) => {
     router.push({
@@ -46,7 +30,22 @@ const NameCreator = () => {
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        setIsLoadingPage(true);
+        const response = await apiCall({
+          base: "games",
+          resource: `page=${currentPage}&page_size=20&creators=${name}`,
+        });
+        setIsLastPage(response.next === null);
+        setGames(response.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoadingPage(false);
+      }
+    };
     fetchGames();
   }, [currentPage, name]);
 

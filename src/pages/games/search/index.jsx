@@ -28,23 +28,6 @@ export default function Search() {
 
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const getGames = async () => {
-    try {
-      setPrevQuery(search);
-      setIsLoadingPage(true);
-      const response = await apiCall({
-        base: "games",
-        resource: `page=${currentPage}&page_size=20&search=${search}`,
-      });
-      setIsLastPage(response.next === null);
-      setGames(response.results);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  };
-
   const handleSearch = (e) => {
     e.preventDefault();
     router.push({
@@ -53,12 +36,15 @@ export default function Search() {
     });
   };
 
-  const handleChangePage = (newPage) => {
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, page: newPage },
-    });
-  };
+  const handleChangePage = useCallback(
+    (newPage) => {
+      router.push({
+        pathname: router.pathname,
+        query: { ...router.query, page: newPage },
+      });
+    },
+    [router]
+  );
 
   useEffect(() => {
     if (router.isReady && router.query.search) {
@@ -66,9 +52,32 @@ export default function Search() {
         handleChangePage(1);
         setPrevQuery(search);
       }
+      const getGames = async () => {
+        try {
+          setPrevQuery(search);
+          setIsLoadingPage(true);
+          const response = await apiCall({
+            base: "games",
+            resource: `page=${currentPage}&page_size=20&search=${search}`,
+          });
+          setIsLastPage(response.next === null);
+          setGames(response.results);
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoadingPage(false);
+        }
+      };
       getGames();
     }
-  }, [router.isReady, search, currentPage]);
+  }, [
+    router.isReady,
+    router.query.search,
+    search,
+    currentPage,
+    handleChangePage,
+    prevQuery,
+  ]);
 
   return (
     <div className="w-full">

@@ -29,29 +29,28 @@ const Title = () => {
   const [show, setShow] = React.useState(false);
   const [posts, setPosts] = React.useState([]);
 
-  const getDetailGame = async () => {
-    try {
-      const response = await apiCall({
-        base: `games/${title}`,
-      });
-      setData(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getPosts = async () => {
-    try {
-      const response = await apiCall({
-        base: `games/${title}/reddit`,
-      });
-      setPosts(response.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   React.useEffect(() => {
+    const getDetailGame = async () => {
+      try {
+        const response = await apiCall({
+          base: `games/${title}`,
+        });
+        setData(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const getPosts = async () => {
+      try {
+        const response = await apiCall({
+          base: `games/${title}/reddit`,
+        });
+        setPosts(response.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     getDetailGame();
     getPosts();
   }, [title]);

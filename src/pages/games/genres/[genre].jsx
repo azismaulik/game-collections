@@ -22,22 +22,6 @@ const Genre = () => {
 
   const [display, setDisplay] = React.useState("grid");
 
-  const fetchGames = async () => {
-    try {
-      setIsLoadingPage(true);
-      const res = await apiCall({
-        base: "games",
-        resource: `page=${currenPage}&page_size=20&genres=${genre}`,
-      });
-      setIsLastPage(res.next === null);
-      setGames(res.results);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -46,6 +30,21 @@ const Genre = () => {
   };
 
   React.useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        setIsLoadingPage(true);
+        const res = await apiCall({
+          base: "games",
+          resource: `page=${currenPage}&page_size=20&genres=${genre}`,
+        });
+        setIsLastPage(res.next === null);
+        setGames(res.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoadingPage(false);
+      }
+    };
     fetchGames();
   }, [currenPage, genre]);
 

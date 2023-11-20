@@ -18,22 +18,6 @@ const Creators = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
-  const fetchCreators = async () => {
-    try {
-      setIsLoading(true);
-      const res = await apiCall({
-        base: "creators",
-        resource: `page=${currentPage}&page_size=20`,
-      });
-      setIsLastPage(res.next === null);
-      setCreators(res.results);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -42,6 +26,21 @@ const Creators = () => {
   };
 
   React.useEffect(() => {
+    const fetchCreators = async () => {
+      try {
+        setIsLoading(true);
+        const res = await apiCall({
+          base: "creators",
+          resource: `page=${currentPage}&page_size=20`,
+        });
+        setIsLastPage(res.next === null);
+        setCreators(res.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     fetchCreators();
   }, [currentPage]);
 

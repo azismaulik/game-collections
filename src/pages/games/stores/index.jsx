@@ -8,18 +8,17 @@ const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 const Stores = () => {
   const [stores, setStores] = React.useState([]);
 
-  const getStores = async () => {
-    try {
-      const res = await apiCall({
-        base: "stores",
-      });
-      setStores(res.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   React.useEffect(() => {
+    const getStores = async () => {
+      try {
+        const res = await apiCall({
+          base: "stores",
+        });
+        setStores(res.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     getStores();
   }, []);
 

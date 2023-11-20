@@ -17,22 +17,6 @@ const Developers = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
-  const getDevelopers = async () => {
-    try {
-      setIsLoading(true);
-      const response = await apiCall({
-        base: "developers",
-        resource: `page=${currentPage}&page_size=20`,
-      });
-      setIsLastPage(response.next === null);
-      setDevelopers(response.results);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -41,6 +25,21 @@ const Developers = () => {
   };
 
   React.useEffect(() => {
+    const getDevelopers = async () => {
+      try {
+        setIsLoading(true);
+        const response = await apiCall({
+          base: "developers",
+          resource: `page=${currentPage}&page_size=20`,
+        });
+        setIsLastPage(response.next === null);
+        setDevelopers(response.results);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     getDevelopers();
   }, [currentPage]);
 

@@ -8,18 +8,17 @@ const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 const Platforms = () => {
   const [platforms, setPlatforms] = React.useState([]);
 
-  const fetchPlatforms = async () => {
-    try {
-      const res = await apiCall({
-        base: "platforms",
-      });
-      setPlatforms(res.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   React.useEffect(() => {
+    const fetchPlatforms = async () => {
+      try {
+        const res = await apiCall({
+          base: "platforms",
+        });
+        setPlatforms(res.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchPlatforms();
   }, []);
 

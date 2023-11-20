@@ -8,20 +8,19 @@ const OtherGames = () => {
   const { title } = router.query;
   const [gameSeries, setGameSeries] = React.useState([]);
 
-  const fetchGameSeries = async () => {
-    try {
-      const response = await apiCall({
-        base: `games/${title}/game-series`,
-      });
-      setGameSeries(response.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   React.useEffect(() => {
+    const fetchGameSeries = async () => {
+      try {
+        const response = await apiCall({
+          base: `games/${title}/game-series`,
+        });
+        setGameSeries(response.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchGameSeries();
-  }, []);
+  }, [title]);
   return (
     <>
       {gameSeries.length ? (

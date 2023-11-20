@@ -18,22 +18,6 @@ const Publishers = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
-  const getPublishers = async () => {
-    try {
-      setIsLoading(true);
-      const response = await apiCall({
-        base: "publishers",
-        resource: `page=${currentPage}&page_size=20`,
-      });
-      setIsLastPage(response.next === null);
-      setPublishers(response.results);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -42,6 +26,21 @@ const Publishers = () => {
   };
 
   React.useEffect(() => {
+    const getPublishers = async () => {
+      try {
+        setIsLoading(true);
+        const response = await apiCall({
+          base: "publishers",
+          resource: `page=${currentPage}&page_size=20`,
+        });
+        setIsLastPage(response.next === null);
+        setPublishers(response.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     getPublishers();
   }, [currentPage]);
 

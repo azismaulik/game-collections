@@ -23,22 +23,6 @@ const Developed = () => {
 
   const [display, setDisplay] = React.useState("grid");
 
-  const getGamesBydeveloped = async () => {
-    try {
-      setIsLoadingPage(true);
-      const response = await apiCall({
-        base: "games",
-        resource: `page=${currentPage}&page_size=20&developers=${developed}`,
-      });
-      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames(response.results);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -47,6 +31,21 @@ const Developed = () => {
   };
 
   React.useEffect(() => {
+    const getGamesBydeveloped = async () => {
+      try {
+        setIsLoadingPage(true);
+        const response = await apiCall({
+          base: "games",
+          resource: `page=${currentPage}&page_size=20&developers=${developed}`,
+        });
+        response.next === null ? setIsLastPage(true) : setIsLastPage(false);
+        setGames(response.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoadingPage(false);
+      }
+    };
     getGamesBydeveloped();
   }, [currentPage, developed]);
 

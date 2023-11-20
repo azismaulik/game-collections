@@ -18,21 +18,6 @@ const Reviews = () => {
   const [isLastPage, setIsLastPage] = React.useState(false);
 
   const [display, setDisplay] = React.useState("grid");
-  const fetchReviews = async () => {
-    try {
-      setIsLoadingPage(true);
-      const response = await apiCall({
-        base: "reviews",
-        resource: `page=${currentPage}&page_size=20`,
-      });
-      setIsLastPage(response.next === null);
-      setReviews(response.results);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  };
 
   const handleChangePage = (newPage) => {
     router.push({
@@ -42,6 +27,21 @@ const Reviews = () => {
   };
 
   React.useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setIsLoadingPage(true);
+        const response = await apiCall({
+          base: "reviews",
+          resource: `page=${currentPage}&page_size=20`,
+        });
+        setIsLastPage(response.next === null);
+        setReviews(response.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoadingPage(false);
+      }
+    };
     fetchReviews();
   }, [currentPage]);
 

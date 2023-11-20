@@ -25,56 +25,6 @@ const Platform = () => {
 
   const [display, setDisplay] = React.useState("grid");
 
-  const getGamesByPlatform = async () => {
-    try {
-      setIsLoadingPage(true);
-      const platformMappingsResponse = await fetch(
-        `${apiUrl}/platforms?key=${apiKey}`
-      );
-
-      if (!platformMappingsResponse.ok) {
-        throw new Error("Failed to fetch platform data");
-      }
-
-      const platformMappingsData = await platformMappingsResponse.json();
-
-      // Buat pemetaan otomatis platform ke ID
-      const platformMappings = platformMappingsData.results.reduce(
-        (acc, platformData) => {
-          acc[platformData.slug] = platformData.id;
-          return acc;
-        },
-        {}
-      );
-
-      // Dapatkan ID platform dari pemetaan
-      const platformId = platformMappings[platform];
-
-      if (!platformId) {
-        return {
-          notFound: true, // Tampilkan 404 jika platform tidak ditemukan
-        };
-      }
-
-      // Lakukan permintaan ke API RAWG untuk mendapatkan data game berdasarkan platform
-      const gamesResponse = await fetch(
-        `${apiUrl}/games?key=${apiKey}&platforms=${platformId}&page=${currenPage}`
-      );
-
-      if (!gamesResponse.ok) {
-        throw new Error("Failed to fetch game data");
-      }
-
-      const gamesData = await gamesResponse.json();
-      setIsLastPage(gamesData.next === null);
-      setGames(gamesData.results);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -83,6 +33,55 @@ const Platform = () => {
   };
 
   React.useEffect(() => {
+    const getGamesByPlatform = async () => {
+      try {
+        setIsLoadingPage(true);
+        const platformMappingsResponse = await fetch(
+          `${apiUrl}/platforms?key=${apiKey}`
+        );
+
+        if (!platformMappingsResponse.ok) {
+          throw new Error("Failed to fetch platform data");
+        }
+
+        const platformMappingsData = await platformMappingsResponse.json();
+
+        // Buat pemetaan otomatis platform ke ID
+        const platformMappings = platformMappingsData.results.reduce(
+          (acc, platformData) => {
+            acc[platformData.slug] = platformData.id;
+            return acc;
+          },
+          {}
+        );
+
+        // Dapatkan ID platform dari pemetaan
+        const platformId = platformMappings[platform];
+
+        if (!platformId) {
+          return {
+            notFound: true, // Tampilkan 404 jika platform tidak ditemukan
+          };
+        }
+
+        // Lakukan permintaan ke API RAWG untuk mendapatkan data game berdasarkan platform
+        const gamesResponse = await fetch(
+          `${apiUrl}/games?key=${apiKey}&platforms=${platformId}&page=${currenPage}`
+        );
+
+        if (!gamesResponse.ok) {
+          throw new Error("Failed to fetch game data");
+        }
+
+        const gamesData = await gamesResponse.json();
+        setIsLastPage(gamesData.next === null);
+        setGames(gamesData.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoadingPage(false);
+      }
+    };
     getGamesByPlatform();
   }, [currenPage, platform]);
 

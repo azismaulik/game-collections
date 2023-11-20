@@ -8,19 +8,18 @@ const Foto = ({ image }) => {
   const { title } = router.query;
   const [fotos, setFotos] = React.useState([]);
 
-  const getFoto = async () => {
-    try {
-      const response = await apiCall({
-        base: `games/${title}/screenshots`,
-        resource: "page_size=3",
-      });
-      setFotos(response.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   React.useEffect(() => {
+    const getFoto = async () => {
+      try {
+        const response = await apiCall({
+          base: `games/${title}/screenshots`,
+          resource: "page_size=3",
+        });
+        setFotos(response.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     getFoto();
   }, [title]);
 

@@ -6,18 +6,18 @@ const Video = () => {
   const router = useRouter();
   const { title } = router.query;
   const [videoUrl, setVideoUrl] = React.useState("");
-  const getVideos = async () => {
-    try {
-      const response = await apiCall({
-        base: `games/${title}/movies`,
-      });
-      setVideoUrl(response.results[0]?.data?.max);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   React.useEffect(() => {
+    const getVideos = async () => {
+      try {
+        const response = await apiCall({
+          base: `games/${title}/movies`,
+        });
+        setVideoUrl(response.results[0]?.data?.max);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     getVideos();
   }, [title]);
 

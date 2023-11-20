@@ -5,22 +5,22 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
-const review = () => {
+const Review = () => {
   const router = useRouter();
   const { id } = router.query;
   const [review, setReview] = React.useState(null);
-  const fetchReview = async () => {
-    try {
-      const response = await apiCall({
-        base: `reviews/${id}`,
-      });
-      setReview(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   React.useEffect(() => {
+    const fetchReview = async () => {
+      try {
+        const response = await apiCall({
+          base: `reviews/${id}`,
+        });
+        setReview(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchReview();
   }, [id]);
 
@@ -78,4 +78,4 @@ const review = () => {
   );
 };
 
-export default review;
+export default Review;

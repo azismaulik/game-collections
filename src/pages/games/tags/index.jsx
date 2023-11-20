@@ -17,22 +17,6 @@ const Tags = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isLastPage, setIsLastPage] = React.useState(false);
 
-  const getTags = async () => {
-    try {
-      setIsLoading(true);
-      const response = await apiCall({
-        base: "tags",
-        resource: `page=${currentPage}&page_size=20`,
-      });
-      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setTags(response.results);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -41,6 +25,21 @@ const Tags = () => {
   };
 
   React.useEffect(() => {
+    const getTags = async () => {
+      try {
+        setIsLoading(true);
+        const response = await apiCall({
+          base: "tags",
+          resource: `page=${currentPage}&page_size=20`,
+        });
+        response.next === null ? setIsLastPage(true) : setIsLastPage(false);
+        setTags(response.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     getTags();
   }, [currentPage]);
 

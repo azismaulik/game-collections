@@ -7,18 +7,18 @@ const CardBrowse = dynamic(() => import("@/components/CardBrowse"));
 
 const Genres = () => {
   const [genres, setGenres] = React.useState([]);
-  const fetchGenres = async () => {
-    try {
-      const res = await apiCall({
-        base: "genres",
-      });
-      setGenres(res.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   React.useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const res = await apiCall({
+          base: "genres",
+        });
+        setGenres(res.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     fetchGenres();
   }, []);
 

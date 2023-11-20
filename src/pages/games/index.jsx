@@ -23,17 +23,6 @@ export default function Home() {
 
   const [display, setDisplay] = React.useState("grid");
 
-  const fetchGames = async () => {
-    setIsLoadingPage(true);
-    const res = await apiCall({
-      base: "games",
-      resource: `page=${currentPage}&page_size=20`,
-    });
-    setIsLastPage(res.next === null);
-    setGames(res.results);
-    setIsLoadingPage(false);
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -42,6 +31,16 @@ export default function Home() {
   };
 
   React.useEffect(() => {
+    const fetchGames = async () => {
+      setIsLoadingPage(true);
+      const res = await apiCall({
+        base: "games",
+        resource: `page=${currentPage}&page_size=20`,
+      });
+      setIsLastPage(res.next === null);
+      setGames(res.results);
+      setIsLoadingPage(false);
+    };
     fetchGames();
   }, [currentPage]);
 

@@ -25,57 +25,6 @@ const Store = () => {
 
   const [display, setDisplay] = React.useState("grid");
 
-  const getGamesByStore = async () => {
-    try {
-      setIsLoadingPage(true);
-      // Lakukan permintaan ke API RAWG untuk mendapatkan data store
-      const storeMappingsResponse = await fetch(
-        `${apiUrl}/stores?key=${apiKey}`
-      );
-
-      if (!storeMappingsResponse.ok) {
-        throw new Error("Failed to fetch store data");
-      }
-
-      const storeMappingsData = await storeMappingsResponse.json();
-
-      // Buat pemetaan otomatis store ke ID
-      const storeMappings = storeMappingsData.results.reduce(
-        (acc, storeData) => {
-          acc[storeData.slug] = storeData.id;
-          return acc;
-        },
-        {}
-      );
-
-      // Dapatkan ID store dari pemetaan
-      const storeId = storeMappings[store];
-
-      if (!storeId) {
-        return {
-          notFound: true, // Tampilkan 404 jika store tidak ditemukan
-        };
-      }
-
-      // Lakukan permintaan ke API RAWG untuk mendapatkan data game berdasarkan store
-      const gamesResponse = await fetch(
-        `${apiUrl}/games?key=${apiKey}&stores=${storeId}&page=${currentPage}`
-      );
-
-      if (!gamesResponse.ok) {
-        throw new Error("Failed to fetch game data");
-      }
-
-      const gamesData = await gamesResponse.json();
-      setIsLastPage(gamesData.next === null);
-      setGames(gamesData.results);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -84,8 +33,59 @@ const Store = () => {
   };
 
   React.useEffect(() => {
+    const getGamesByStore = async () => {
+      try {
+        setIsLoadingPage(true);
+        // Lakukan permintaan ke API RAWG untuk mendapatkan data store
+        const storeMappingsResponse = await fetch(
+          `${apiUrl}/stores?key=${apiKey}`
+        );
+
+        if (!storeMappingsResponse.ok) {
+          throw new Error("Failed to fetch store data");
+        }
+
+        const storeMappingsData = await storeMappingsResponse.json();
+
+        // Buat pemetaan otomatis store ke ID
+        const storeMappings = storeMappingsData.results.reduce(
+          (acc, storeData) => {
+            acc[storeData.slug] = storeData.id;
+            return acc;
+          },
+          {}
+        );
+
+        // Dapatkan ID store dari pemetaan
+        const storeId = storeMappings[store];
+
+        if (!storeId) {
+          return {
+            notFound: true, // Tampilkan 404 jika store tidak ditemukan
+          };
+        }
+
+        // Lakukan permintaan ke API RAWG untuk mendapatkan data game berdasarkan store
+        const gamesResponse = await fetch(
+          `${apiUrl}/games?key=${apiKey}&stores=${storeId}&page=${currentPage}`
+        );
+
+        if (!gamesResponse.ok) {
+          throw new Error("Failed to fetch game data");
+        }
+
+        const gamesData = await gamesResponse.json();
+        setIsLastPage(gamesData.next === null);
+        setGames(gamesData.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoadingPage(false);
+      }
+    };
+
     getGamesByStore();
-  }, [currentPage]);
+  }, [currentPage, store]);
 
   return (
     <div>

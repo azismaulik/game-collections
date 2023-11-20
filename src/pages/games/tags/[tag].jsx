@@ -24,22 +24,6 @@ const Tag = () => {
 
   const [display, setDisplay] = React.useState("grid");
 
-  const getGameByTag = async () => {
-    try {
-      setIsLoadingPage(true);
-      const response = await apiCall({
-        base: "games",
-        resource: `page=${currentPage}&page_size=20&tags=${tag}`,
-      });
-      setIsLastPage(response.next === null);
-      setGames(response.results);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -48,6 +32,21 @@ const Tag = () => {
   };
 
   React.useEffect(() => {
+    const getGameByTag = async () => {
+      try {
+        setIsLoadingPage(true);
+        const response = await apiCall({
+          base: "games",
+          resource: `page=${currentPage}&page_size=20&tags=${tag}`,
+        });
+        setIsLastPage(response.next === null);
+        setGames(response.results);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoadingPage(false);
+      }
+    };
     getGameByTag();
   }, [currentPage, tag]);
 

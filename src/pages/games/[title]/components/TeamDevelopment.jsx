@@ -9,18 +9,17 @@ const TeamDevelopment = ({ name }) => {
 
   const [team, setTeam] = React.useState([]);
 
-  const getTeam = async () => {
-    try {
-      const response = await apiCall({
-        base: `games/${title}/development-team`,
-      });
-      setTeam(response.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   React.useEffect(() => {
+    const getTeam = async () => {
+      try {
+        const response = await apiCall({
+          base: `games/${title}/development-team`,
+        });
+        setTeam(response.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     getTeam();
   }, [title]);
 

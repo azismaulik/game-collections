@@ -23,22 +23,6 @@ const Published = () => {
 
   const [display, setDisplay] = React.useState("grid");
 
-  const getGameByPublished = async () => {
-    try {
-      setIsLoadingPage(true);
-      const response = await apiCall({
-        base: "games",
-        resource: `page=${currentPage}&page_size=20&publishers=${published}`,
-      });
-      response.next === null ? setIsLastPage(true) : setIsLastPage(false);
-      setGames(response.results);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoadingPage(false);
-    }
-  };
-
   const handleChangePage = (newPage) => {
     router.push({
       pathname: router.pathname,
@@ -47,6 +31,21 @@ const Published = () => {
   };
 
   React.useEffect(() => {
+    const getGameByPublished = async () => {
+      try {
+        setIsLoadingPage(true);
+        const response = await apiCall({
+          base: "games",
+          resource: `page=${currentPage}&page_size=20&publishers=${published}`,
+        });
+        response.next === null ? setIsLastPage(true) : setIsLastPage(false);
+        setGames(response.results);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoadingPage(false);
+      }
+    };
     getGameByPublished();
   }, [currentPage, published]);
 

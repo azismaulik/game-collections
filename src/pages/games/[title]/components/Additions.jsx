@@ -8,26 +8,26 @@ const Additions = () => {
   const { title } = router.query;
   const [additions, setAdditions] = React.useState([]);
 
-  const getAdditions = async () => {
-    try {
-      const response = await apiCall({
-        base: `games/${title}/additions`,
-      });
-      setAdditions(response.results);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   React.useEffect(() => {
+    const getAdditions = async () => {
+      try {
+        const response = await apiCall({
+          base: `games/${title}/additions`,
+        });
+        setAdditions(response.results);
+      } catch (error) {
+        console.log(error);
+      }
+    };
     getAdditions();
-  }, []);
+  }, [title]);
+
   return (
     <>
       {additions?.length ? (
         <div>
           <h1 className="text-neutral-600 mb-2 font-bold mt-6">
-            DLC's and editions
+            DLC&apos;s and editions
           </h1>
           {additions?.map((item, i) => (
             <Link

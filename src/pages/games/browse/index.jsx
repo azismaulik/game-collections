@@ -23,63 +23,62 @@ const Browse = () => {
   const [lengthPublishers, setLengthPublishers] = React.useState(0);
   const [lengthStores, setLengthStores] = React.useState(0);
 
-  const getPlatforms = async () => {
-    const response = await apiCall({
-      base: "platforms",
-    });
-    setLengthPlatforms(response.count);
-    setPlatforms(response.results);
-  };
-
-  const getGenres = async () => {
-    const response = await apiCall({
-      base: "genres",
-    });
-    setLengthGenres(response.count);
-    setGenres(response.results);
-  };
-
-  const getTags = async () => {
-    const response = await apiCall({
-      base: "tags",
-    });
-    setLengthTags(response.count);
-    setTags(response.results);
-  };
-
-  const getCreators = async () => {
-    const response = await apiCall({
-      base: "creators",
-    });
-    setLengthCreators(response.count);
-    setCreators(response.results);
-  };
-
-  const getDevelopers = async () => {
-    const response = await apiCall({
-      base: "developers",
-    });
-    setLengthDevelopers(response.count);
-    setDevelopers(response.results);
-  };
-
-  const getPublishers = async () => {
-    const response = await apiCall({
-      base: "publishers",
-    });
-    setLengthPublishers(response.count);
-    setPublishers(response.results);
-  };
-
-  const getStores = async () => {
-    const response = await apiCall({
-      base: "stores",
-    });
-    setLengthStores(response.count);
-    setStores(response.results);
-  };
-
   React.useEffect(() => {
+    const getPlatforms = async () => {
+      const response = await apiCall({
+        base: "platforms",
+      });
+      setLengthPlatforms(response.count);
+      setPlatforms(response.results);
+    };
+
+    const getGenres = async () => {
+      const response = await apiCall({
+        base: "genres",
+      });
+      setLengthGenres(response.count);
+      setGenres(response.results);
+    };
+
+    const getTags = async () => {
+      const response = await apiCall({
+        base: "tags",
+      });
+      setLengthTags(response.count);
+      setTags(response.results);
+    };
+
+    const getCreators = async () => {
+      const response = await apiCall({
+        base: "creators",
+      });
+      setLengthCreators(response.count);
+      setCreators(response.results);
+    };
+
+    const getDevelopers = async () => {
+      const response = await apiCall({
+        base: "developers",
+      });
+      setLengthDevelopers(response.count);
+      setDevelopers(response.results);
+    };
+
+    const getPublishers = async () => {
+      const response = await apiCall({
+        base: "publishers",
+      });
+      setLengthPublishers(response.count);
+      setPublishers(response.results);
+    };
+
+    const getStores = async () => {
+      const response = await apiCall({
+        base: "stores",
+      });
+      setLengthStores(response.count);
+      setStores(response.results);
+    };
     getPlatforms();
     getGenres();
     getTags();

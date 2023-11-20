@@ -6,7 +6,7 @@ const Home = () => {
 
   useEffect(() => {
     router.push("/games");
-  }, []);
+  });
 };
 
 export default Home;
