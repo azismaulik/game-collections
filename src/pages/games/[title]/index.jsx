@@ -17,6 +17,7 @@ import Genres from "./components/Genres";
 import ReleaseDate from "./components/ReleaseDate";
 import Developers from "./components/Developers";
 import Publishers from "./components/Publishers";
+import Tags from "./components/Tags";
 
 const Title = () => {
   const router = useRouter();
