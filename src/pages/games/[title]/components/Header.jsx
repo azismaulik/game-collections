@@ -19,7 +19,7 @@ const Header = ({ data }) => {
           {formatDate(data?.released)}
         </div>
         <div className="flex gap-2 items-center my-4">
-          {data.parent_platforms?.map((item, i) => (
+          {data?.parent_platforms?.map((item, i) => (
             <Image
               key={i}
               src={imagePlatforms[item?.platform?.slug]}
