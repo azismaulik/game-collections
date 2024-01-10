@@ -16,7 +16,7 @@ const Header = ({ data }) => {
       </div>
       <div className="flex flex-wrap gap-2 items-center">
         <div className="text-black px-2 rounded-lg bg-white text-sm font-semibold">
-          {formatDate(data.released)}
+          {formatDate(data?.released)}
         </div>
         <div className="flex gap-2 items-center my-4">
           {data.parent_platforms?.map((item, i) => (
