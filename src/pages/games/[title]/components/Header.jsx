@@ -12,7 +12,7 @@ const Header = ({ data }) => {
         <span>/</span>
         <Link href="/games">Games</Link>
         <span>/</span>
-        <p>{data.name}</p>
+        <p>{data?.name}</p>
       </div>
       <div className="flex flex-wrap gap-2 items-center">
         <div className="text-black px-2 rounded-lg bg-white text-sm font-semibold">
@@ -22,7 +22,7 @@ const Header = ({ data }) => {
           {data.parent_platforms?.map((item, i) => (
             <Image
               key={i}
-              src={imagePlatforms[item.platform.slug]}
+              src={imagePlatforms[item?.platform?.slug]}
               width={20}
               height={20}
               alt=""
